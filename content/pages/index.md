@@ -84,7 +84,7 @@ sections:
           type: EmailFormControl
         - type: TextFormControl
           name: dateDesire
-          label: Name
+          label: Date Desired
           hideLabel: false
           placeholder: Date Desired
           width: full
