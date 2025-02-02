@@ -48,7 +48,7 @@ sections:
       type: ImageBlock
       url: /images/7Y5A0455-2.jpg
       altText: senior grad photography in brained mn
-      caption: Caption of the image
+      caption: ''
       elementId: ''
   - colors: colors-f
     type: FeaturedProjectsSection
