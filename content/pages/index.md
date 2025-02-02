@@ -89,7 +89,7 @@ sections:
           placeholder: ''
           width: full
           isRequired: false
-      submitLabel: "Submit \U0001F680"
+      submitLabel: "Submit \U0001F4A5"
       styles:
         submitLabel:
           textAlign: center
