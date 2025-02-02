@@ -59,8 +59,7 @@ sections:
       altText: senior grad photography in brained mn
       caption: Savannah
       elementId: ''
-    text: |
-      Now booking for 2025!
+    text: ''
   - type: ContactSection
     colors: colors-f
     backgroundSize: full
