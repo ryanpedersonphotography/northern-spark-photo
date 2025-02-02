@@ -86,7 +86,7 @@ sections:
           name: dateDesire
           label: Name
           hideLabel: false
-          placeholder: Date Desire
+          placeholder: Date Desired
           width: full
           isRequired: false
       submitLabel: "Submit \U0001F680"
