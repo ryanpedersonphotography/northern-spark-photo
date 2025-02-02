@@ -50,6 +50,8 @@ sections:
       altText: senior grad photography in brained mn
       caption: Savannah
       elementId: ''
+    text: |
+      the text goes here
   - colors: colors-f
     type: FeaturedProjectsSection
     elementId: ''
