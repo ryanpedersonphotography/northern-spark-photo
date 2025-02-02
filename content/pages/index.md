@@ -82,6 +82,13 @@ sections:
           isRequired: true
           width: 1/2
           type: EmailFormControl
+        - type: TextFormControl
+          name: dateDesire
+          label: Name
+          hideLabel: false
+          placeholder: Your name
+          width: full
+          isRequired: false
       submitLabel: "Submit \U0001F680"
       styles:
         submitLabel:
