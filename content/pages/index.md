@@ -11,7 +11,7 @@ backgroundImage:
   opacity: 75
 sections:
   - elementId: ''
-    colors: colors-d
+    colors: colors-e
     backgroundSize: full
     title: Brainerd Lakes Area Senior Grad Photography
     subtitle: >-
