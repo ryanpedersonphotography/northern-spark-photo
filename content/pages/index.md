@@ -60,7 +60,7 @@ sections:
       caption: Savannah
       elementId: ''
     text: |
-      the text goes here
+      We are now booking for 2025!
   - colors: colors-f
     type: FeaturedProjectsSection
     elementId: ''
