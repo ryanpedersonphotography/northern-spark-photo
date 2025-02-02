@@ -45,7 +45,7 @@ sections:
     type: HeroSection
     actions:
       - type: Button
-        label: Contact Us
+        label: Now Booking For 2025
         altText: ''
         url: /contact
         showIcon: false
