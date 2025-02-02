@@ -48,7 +48,7 @@ sections:
       type: ImageBlock
       url: /images/7Y5A0455-2.jpg
       altText: senior grad photography in brained mn
-      caption: ''
+      caption: Savannah
       elementId: ''
   - colors: colors-f
     type: FeaturedProjectsSection
