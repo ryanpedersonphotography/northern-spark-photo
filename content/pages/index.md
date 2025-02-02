@@ -13,7 +13,7 @@ sections:
   - elementId: ''
     colors: colors-a
     backgroundSize: full
-    title: Brainerd Lakes Area Senior Grad Photography
+    title: 'Northern Spark Photo: Brainerd Lakes Area Senior Grad Photography'
     subtitle: >-
       We are a one of the top photo studios based out of the Brainerd Lakes
       Area.  We've been doing this a long time and love what we do.
