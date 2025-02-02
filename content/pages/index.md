@@ -45,7 +45,7 @@ sections:
     type: HeroSection
     actions:
       - type: Button
-        label: Learn more
+        label: Contact Us
         altText: ''
         url: /contact
         showIcon: false
