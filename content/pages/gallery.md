@@ -33,7 +33,7 @@ sections:
         elementId: ''
       - type: ImageBlock
         url: /images/7Y5A4163.jpg
-        altText: altText of the image
+        altText: image 6
         caption: Caption of the image
         elementId: ''
       - type: ImageBlock
