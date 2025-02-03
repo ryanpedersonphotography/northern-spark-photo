@@ -27,7 +27,7 @@ sections:
         caption: Image four caption
         elementId: ''
       - type: ImageBlock
-        url: /images/_E3A4045.JPG
+        url: /images/_E3A4367.jpg
         altText: altText of the image
         caption: Caption of the image
         elementId: ''
