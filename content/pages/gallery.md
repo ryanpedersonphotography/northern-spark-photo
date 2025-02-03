@@ -29,7 +29,7 @@ sections:
       - type: ImageBlock
         url: /images/_E3A4367.jpg
         altText: image 5
-        caption: Caption of the image
+        caption: image 5
         elementId: ''
       - type: ImageBlock
         url: /images/7Y5A4163.jpg
