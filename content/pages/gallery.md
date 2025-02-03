@@ -43,7 +43,7 @@ sections:
         elementId: ''
       - type: ImageBlock
         url: /images/7Y5A8334.jpg
-        altText: altText of the image
+        altText: image 8
         caption: Caption of the image
         elementId: ''
     colors: colors-c
