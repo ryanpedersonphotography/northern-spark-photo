@@ -54,7 +54,7 @@ sections:
   - type: ContactSection
     colors: colors-f
     backgroundSize: full
-    title: Reserve Your Date Now!
+    title: Reserve Your Photo Shoot Now!
     form:
       type: FormBlock
       elementId: sign-up-form
@@ -105,4 +105,6 @@ sections:
         textAlign: left
       text:
         textAlign: left
+metaTitle: brainerd lakes area senior grad photography
+metaDescription: brainerd lakes area senior grad photography
 ---
