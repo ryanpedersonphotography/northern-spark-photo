@@ -7,7 +7,7 @@ sections:
     subtitle: This is the subtitle
     images:
       - type: ImageBlock
-        url: /images/7Y5A0733.jpg
+        url: /images/7Y5A7659-2.jpg
         altText: Image one
         caption: Image one caption
         elementId: ''
