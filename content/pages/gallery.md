@@ -4,7 +4,7 @@ title: Gallery
 sections:
   - type: MediaGallerySection
     title: Gallery
-    subtitle: This is the subtitle
+    subtitle: ''
     images:
       - type: ImageBlock
         url: /images/7Y5A7659-2.jpg
