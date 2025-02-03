@@ -22,7 +22,7 @@ sections:
         caption: Image three caption
         elementId: ''
       - type: ImageBlock
-        url: /images/gallery-4.jpg
+        url: /images/_E3A2935-2.JPG
         altText: Image four
         caption: Image four caption
         elementId: ''
