@@ -28,7 +28,7 @@ sections:
         elementId: ''
       - type: ImageBlock
         url: /images/_E3A4367.jpg
-        altText: altText of the image
+        altText: image 5
         caption: Caption of the image
         elementId: ''
       - type: ImageBlock
