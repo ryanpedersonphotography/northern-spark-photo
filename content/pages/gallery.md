@@ -46,7 +46,7 @@ sections:
         altText: image 8
         caption: image 8
         elementId: ''
-    colors: colors-d
+    colors: colors-b
     spacing: 16
     columns: 2
     aspectRatio: auto
