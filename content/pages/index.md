@@ -1,6 +1,6 @@
 ---
 type: PageLayout
-title: .
+title: test
 colors: colors-a
 backgroundImage:
   type: BackgroundImage
