@@ -43,16 +43,7 @@ sections:
       actions:
         justifyContent: flex-start
     type: HeroSection
-    actions:
-      - type: Button
-        label: Now Booking For 2025
-        altText: ''
-        url: /contact
-        showIcon: false
-        icon: arrowRight
-        iconPosition: right
-        style: primary
-        elementId: ''
+    actions: []
     media:
       type: ImageBlock
       url: /images/7Y5A0455-2.jpg
