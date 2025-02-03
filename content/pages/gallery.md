@@ -44,7 +44,7 @@ sections:
       - type: ImageBlock
         url: /images/7Y5A8334.jpg
         altText: image 8
-        caption: Caption of the image
+        caption: image 8
         elementId: ''
     colors: colors-c
     spacing: 16
