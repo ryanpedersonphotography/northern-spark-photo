@@ -12,11 +12,6 @@
                 "type": "Link",
                 "label": "Gallery",
                 "url": "/gallery"
-            },
-            {
-                "type": "Link",
-                "label": "Blog",
-                "url": "/blog"
             }
         ],
         "socialLinks": [
