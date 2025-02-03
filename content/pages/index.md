@@ -20,7 +20,7 @@ sections:
     styles:
       self:
         height: auto
-        width: wide
+        width: full
         margin:
           - mt-0
           - mb-0
@@ -43,16 +43,7 @@ sections:
       actions:
         justifyContent: flex-start
     type: HeroSection
-    actions:
-      - type: Button
-        label: Now Booking For 2025
-        altText: ''
-        url: /contact
-        showIcon: false
-        icon: arrowRight
-        iconPosition: right
-        style: primary
-        elementId: ''
+    actions: []
     media:
       type: ImageBlock
       url: /images/7Y5A0455-2.jpg
@@ -63,7 +54,7 @@ sections:
   - type: ContactSection
     colors: colors-f
     backgroundSize: full
-    title: Reserve Your Date Now!
+    title: Reserve Your Photo Shoot Now!
     form:
       type: FormBlock
       elementId: sign-up-form
@@ -114,4 +105,6 @@ sections:
         textAlign: left
       text:
         textAlign: left
+metaTitle: brainerd lakes area senior grad photography
+metaDescription: brainerd lakes area senior grad photography
 ---
