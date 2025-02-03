@@ -17,10 +17,10 @@
         "socialLinks": [
             {
                 "type": "Social",
-                "altText": "Twitter",
-                "label": "Twitter",
-                "url": "https://twitter.com/netlify",
-                "icon": "twitter"
+                "altText": "Instagram",
+                "label": "Instagram",
+                "url": "https://instagram/northernspark.photos",
+                "icon": "instagram"
             },
             {
                 "type": "Social",
