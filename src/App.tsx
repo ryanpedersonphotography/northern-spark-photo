@@ -10,7 +10,6 @@ import PricingSection from '../components/PricingSection';
 import ContactSection from '../components/ContactSection';
 import Footer from '../components/Footer';
 import { images } from './data/images';
-import { Image } from './types';
 
 const App: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('senior');
