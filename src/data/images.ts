@@ -2,11 +2,11 @@ import { ImageCategory } from '../types';
 
 export const images: ImageCategory = {
   senior: [
-    { src: "/api/placeholder/600/900", alt: "Senior portrait with natural lighting in Nisswa, Minnesota park setting", orientation: "portrait" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/v1743362476/_E3A3081_eeqxrx.avif", alt: "Senior portrait with natural lighting in Nisswa, Minnesota park setting", orientation: "portrait" },
     { src: "/api/placeholder/900/600", alt: "Senior graduation photos in Central Minnesota with lake backdrop", orientation: "landscape" },
-    { src: "/api/placeholder/600/900", alt: "High school senior portrait with urban backdrop in downtown Nisswa", orientation: "portrait" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/v1743362476/_E3A3081_eeqxrx.avif", alt: "High school senior portrait with urban backdrop in downtown Nisswa", orientation: "portrait" },
     { src: "/api/placeholder/900/600", alt: "Senior portrait in natural park setting", orientation: "landscape" },
-    { src: "/api/placeholder/600/900", alt: "Dramatic lighting senior portrait", orientation: "portrait" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/v1743362476/_E3A3081_eeqxrx.avif", alt: "Dramatic lighting senior portrait", orientation: "portrait" },
     { src: "/api/placeholder/900/600", alt: "Senior portrait at sunset", orientation: "landscape" }
   ],
   family: [
