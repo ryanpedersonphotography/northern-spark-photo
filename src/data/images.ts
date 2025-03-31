@@ -3,11 +3,11 @@ import { ImageCategory } from '../types';
 export const images: ImageCategory = {
   senior: [
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/v1743362476/_E3A3081_eeqxrx.avif", alt: "Senior portrait with natural lighting in Nisswa, Minnesota park setting", orientation: "portrait" },
-    { src: "/api/placeholder/900/600", alt: "Senior graduation photos in Central Minnesota with lake backdrop", orientation: "landscape" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/v1743362476/_E3A3081_eeqxrx.avif", alt: "Senior graduation photos in Central Minnesota with lake backdrop", orientation: "landscape" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/v1743362476/_E3A3081_eeqxrx.avif", alt: "High school senior portrait with urban backdrop in downtown Nisswa", orientation: "portrait" },
-    { src: "/api/placeholder/900/600", alt: "Senior portrait in natural park setting", orientation: "landscape" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/v1743362476/_E3A3081_eeqxrx.avif", alt: "Senior portrait in natural park setting", orientation: "landscape" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/v1743362476/_E3A3081_eeqxrx.avif", alt: "Dramatic lighting senior portrait", orientation: "portrait" },
-    { src: "/api/placeholder/900/600", alt: "Senior portrait at sunset", orientation: "landscape" }
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/v1743362476/_E3A3081_eeqxrx.avif", alt: "Senior portrait at sunset", orientation: "landscape" }
   ],
   family: [
     { src: "/api/placeholder/900/600", alt: "Family portrait outdoors with young children at Gull Lake in Nisswa, Minnesota", orientation: "landscape" },
