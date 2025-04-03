@@ -1,31 +1,28 @@
+/* Existing CSS content... */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Global styles */
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 245, 245, 245;
-  --background-end-rgb: 255, 255, 255;
+/* Add styles for react-masonry-css */
+.my-masonry-grid {
+  display: flex;
+  margin-left: -1rem; /* Adjust for column padding */
+  width: auto;
 }
 
-html,
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-  min-height: 100vh;
+.my-masonry-grid_column {
+  padding-left: 1rem; /* Column gutter */
+  background-clip: padding-box;
 }
 
-button {
-  cursor: pointer;
+/* Style your items */
+.my-masonry-grid_column > div { /* Apply bottom margin to items */
+  margin-bottom: 1rem; /* Vertical gutter */
 }
 
-img {
-  max-width: 100%;
+/* Ensure images within grid items behave correctly */
+.my-masonry-grid_column img {
+  display: block;
+  width: 100%;
   height: auto;
 }
