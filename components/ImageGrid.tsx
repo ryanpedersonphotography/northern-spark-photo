@@ -15,32 +15,35 @@ interface ImageGridProps {
 const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox }) => {
   // Determine number of columns based on screen width
   const getGridStyle = () => {
-    // VSCO-style layout with minimal spacing between images
-    const gap = '4px'; // Very small gap like VSCO
+    // VSCO-style layout with completely uniform spacing
+    const uniformGap = '8px'; // Uniform gap for all directions
     
     if (windowWidth < 640) {
       return {
         display: 'grid',
         gridTemplateColumns: '1fr',
-        gap: gap,
-        margin: '0',
-        width: '100%' // Full width
+        gap: uniformGap, // Same gap for row and column
+        padding: uniformGap, // Same padding on all sides
+        boxSizing: 'border-box' as 'border-box',
+        width: '100%'
       };
     } else if (windowWidth < 1024) {
       return {
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
-        gap: gap,
-        margin: '0',
-        width: '100%' // Full width
+        gap: uniformGap, // Same gap for row and column
+        padding: uniformGap, // Same padding on all sides
+        boxSizing: 'border-box' as 'border-box',
+        width: '100%'
       };
     } else {
       return {
         display: 'grid',
         gridTemplateColumns: '1fr 1fr 1fr',
-        gap: gap,
-        margin: '0',
-        width: '100%' // Full width
+        gap: uniformGap, // Same gap for row and column
+        padding: uniformGap, // Same padding on all sides
+        boxSizing: 'border-box' as 'border-box',
+        width: '100%'
       };
     }
   };
