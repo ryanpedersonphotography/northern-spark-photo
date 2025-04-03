@@ -43,9 +43,10 @@ const Lightbox: React.FC<LightboxProps> = ({
       </div>
       
       <div className="flex items-center justify-center h-screen w-full">
-        <img 
-          src={currentImage.src} 
-          alt={currentImage.alt} 
+        <img
+          // Add width transformation for lightbox view (larger than grid)
+          src={currentImage.src.replace('/upload/', '/upload/w_1600,')}
+          alt={currentImage.alt}
           style={{
             width: '100%',
             height: '100%',

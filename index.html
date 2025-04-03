@@ -11,8 +11,10 @@
     <!-- Preconnect to Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-    
+    <!-- Preload the font stylesheet -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet"></noscript>
+
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Northern Spark Photography | Nisswa, MN" />
     <meta property="og:description" content="Premium Senior & Family Photography in Nisswa, Minnesota" />
@@ -22,6 +24,7 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    {/* Defer the main script execution */}
+    <script type="module" src="/src/main.tsx" defer></script>
   </body>
 </html>

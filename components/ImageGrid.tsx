@@ -52,8 +52,8 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
           onClick={() => openLightbox(index)}
         >
           <img
-            // Add width transformation for grid view thumbnails
-            src={image.src.replace('/upload/', '/upload/w_600,')}
+            // Use w_1200 for better grid quality, still optimized
+            src={image.src.replace('/upload/', '/upload/w_1200,')}
             alt={image.alt}
             style={{
               width: '100%',
@@ -63,7 +63,8 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
             }}
             onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
             onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-            loading="lazy" // Added lazy loading
+            // Apply lazy loading only to images after the first few (e.g., index 6+)
+            loading={index >= 6 ? "lazy" : "eager"}
           />
         </div>
       ))}
