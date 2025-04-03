@@ -16,12 +16,15 @@ export const images: ImageCategory = {
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650289/senior-grads/7Y5A0049_ntdcea.avif", alt: "Senior graduate portrait with dramatic side lighting.", orientation: "portrait" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650288/senior-grads/7Y5A0064-2_yp2jxc.avif", alt: "Candid shot of a laughing senior graduate outdoors.", orientation: "landscape" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650286/senior-grads/7Y5A0161_vbr2ph.avif", alt: "Smiling senior graduate close-up portrait.", orientation: "portrait" },
-    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650286/senior-grads/7Y5A0122_ymwfvz.avif", alt: "Senior graduate sitting on a wooden dock by a calm lake.", orientation: "landscape" },
+    // Replacing index 10 (girl near water)
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650281/senior-grads/7Y5A0163-2_cfqoqw.avif", alt: "Senior graduate portrait outdoors, looking away.", orientation: "landscape" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650281/senior-grads/7Y5A0204-2_tji6yo.avif", alt: "Senior graduate walking through tall grass.", orientation: "landscape" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650277/senior-grads/7Y5A0159_ancfuz.avif", alt: "Senior graduate portrait with a blurred green background.", orientation: "landscape" },
-    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650273/senior-grads/7Y5A0254-2_buuql7.avif", alt: "Senior graduate sitting on rocks near water.", orientation: "landscape" },
+    // Replacing index 13 (girl near water)
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650255/senior-grads/7Y5A1327_azyvgz.avif", alt: "Smiling senior graduate portrait outdoors.", orientation: "portrait" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650270/senior-grads/7Y5A0437-2_n5rijp.avif", alt: "Senior graduate leaning against a large tree trunk.", orientation: "portrait" },
-    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650267/senior-grads/7Y5A0676_svrvbt.avif", alt: "Senior graduate portrait standing near water's edge.", orientation: "portrait" },
+    // Replacing index 15 (girl near water)
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650255/senior-grads/7Y5A1372-2_ky4anf.avif", alt: "Senior graduate portrait looking directly at camera.", orientation: "portrait" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650266/senior-grads/7Y5A0390-3_ysxmak.avif", alt: "Senior graduate portrait in front of a rustic building.", orientation: "landscape" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650264/senior-grads/7Y5A0769_hzdadg.avif", alt: "Formal senior graduate portrait looking at camera.", orientation: "portrait" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650263/senior-grads/7Y5A0816_ngx58f.avif", alt: "Senior graduate portrait with hands clasped.", orientation: "portrait" },
