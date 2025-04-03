@@ -9,14 +9,14 @@ const Footer: React.FC = () => {
             <p className="text-gray-500 text-sm font-light">© {new Date().getFullYear()} Northern Spark Photography. All rights reserved.</p>
           </div>
           <div className="flex space-x-6">
-            <a href="#" className="text-gray-500 hover:text-gray-800 transition-colors">
+            <a href="https://www.instagram.com/northernsparkstudio/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-800 transition-colors">
               <span className="text-sm font-light uppercase tracking-wide">Instagram</span>
             </a>
-            <a href="#" className="text-gray-500 hover:text-gray-800 transition-colors">
+            <a href="https://www.facebook.com/northernsparkstudio" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-800 transition-colors">
               <span className="text-sm font-light uppercase tracking-wide">Facebook</span>
             </a>
-            <a href="#" className="text-gray-500 hover:text-gray-800 transition-colors">
-              <span className="text-sm font-light uppercase tracking-wide">Pinterest</span>
+            <a href="https://vsco.co/northernsparkstudio/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-800 transition-colors">
+              <span className="text-sm font-light uppercase tracking-wide">VSCO</span>
             </a>
           </div>
         </div>

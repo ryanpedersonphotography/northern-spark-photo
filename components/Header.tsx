@@ -25,7 +25,7 @@ const Header: React.FC<HeaderProps> = ({ windowWidth }) => {
         letterSpacing: '0.1em',
         color: '#777',
         transition: 'font-size 0.3s ease'
-      }}>Premium Senior & Family Photography in Nisswa, Minnesota</p>
+      }}>Senior Grad & Nature Photography in Nisswa, Minnesota</p>
     </>
   );
 };
