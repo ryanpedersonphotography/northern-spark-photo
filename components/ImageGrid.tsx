@@ -51,9 +51,10 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
           }}
           onClick={() => openLightbox(index)}
         >
-          <img 
-            src={image.src} 
-            alt={image.alt} 
+          <img
+            // Add width transformation for grid view thumbnails
+            src={image.src.replace('/upload/', '/upload/w_600,')}
+            alt={image.alt}
             style={{
               width: '100%',
               height: '100%',
