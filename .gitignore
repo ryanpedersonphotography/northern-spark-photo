@@ -27,5 +27,5 @@ dist-ssr
 src/assets/images/
 
 # Temporary files (if not needed in repo)
-*.json
-*.txt
+# *.json # Re-evaluate if other JSON files need committing
+# *.txt # Removed to allow robots.txt
