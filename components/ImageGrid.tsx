@@ -47,7 +47,9 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
             cursor: 'pointer',
             margin: 0,
             padding: 0,
-            gridRow: image.orientation === 'portrait' ? 'span 2' : 'span 1'
+            gridRow: image.orientation === 'portrait' ? 'span 2' : 'span 1',
+            // Add aspect-ratio to reserve space and prevent layout shift
+            aspectRatio: image.orientation === 'portrait' ? '2 / 3' : '3 / 2'
           }}
           onClick={() => openLightbox(index)}
         >
@@ -59,12 +61,15 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              transition: 'transform 0.5s ease'
+              transition: 'transform 0.5s ease',
+              // Ensure image fills the aspect-ratio container
+              display: 'block'
             }}
             onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
             onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-            // Apply lazy loading only to images after the first few (e.g., index 6+)
-            loading={index >= 6 ? "lazy" : "eager"}
+            // Load first image eagerly with high priority (LCP), lazy load others
+            loading={index === 0 ? "eager" : "lazy"}
+            fetchPriority={index === 0 ? "high" : "auto"} // Corrected attribute name
           />
         </div>
       ))}
