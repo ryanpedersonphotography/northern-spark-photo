@@ -9,8 +9,8 @@ export default defineConfig({
     host: true,
   },
   build: {
-    // Generate source maps for better debugging
-    sourcemap: true,
+    // Only generate source maps in development mode
+    sourcemap: process.env.NODE_ENV === 'development',
     // Optimize bundle size
     rollupOptions: {
       output: {

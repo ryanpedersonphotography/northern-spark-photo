@@ -53,24 +53,39 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
           }}
           onClick={() => openLightbox(index)}
         >
-          <img
-            // Use w_1200 and q_auto:best for grid thumbnails to enhance HDR quality with reasonable performance
-            src={image.src.replace('/upload/f_auto,q_auto', '/upload/f_auto,q_auto:best,w_1200')}
-            alt={image.alt}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              transition: 'transform 0.5s ease',
-              // Ensure image fills the aspect-ratio container
-              display: 'block'
-            }}
-            onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-            onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-            // Eager load the first few images (likely above the fold), lazy load the rest
-            loading={index < 3 ? "eager" : "lazy"}
-            fetchPriority={index < 3 ? "high" : "auto"}
-          />
+          <div className="w-full h-full bg-gray-200 relative">
+            {/* Low quality image placeholder */}
+            <img
+              src={image.src.replace('/upload/f_auto,q_auto', '/upload/f_auto,q_auto:low,w_20,e_blur:1000')}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover blur-lg"
+              aria-hidden="true"
+            />
+            {/* Main image */}
+            <img
+              // Use w_1200 and q_auto:best for grid thumbnails to enhance HDR quality with reasonable performance
+              src={image.src.replace('/upload/f_auto,q_auto', '/upload/f_auto,q_auto:best,w_1200')}
+              alt={image.alt}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                transition: 'transform 0.5s ease, opacity 0.3s ease',
+                // Ensure image fills the aspect-ratio container
+                display: 'block',
+                position: 'relative',
+                zIndex: 1
+              }}
+              onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+              onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+              onLoad={(e) => e.currentTarget.style.opacity = '1'} 
+              // Start with opacity 0 and reveal when loaded
+              className="opacity-0"
+              // Eager load the first few images (likely above the fold), lazy load the rest
+              loading={index < 3 ? "eager" : "lazy"}
+              fetchPriority={index < 3 ? "high" : "auto"}
+            />
+          </div>
         </div>
       ))}
     </div>

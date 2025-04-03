@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import './App.css';
 import Header from '../components/Header';
 import Navigation from '../components/Navigation';
 // import HamburgerMenu from '../components/HamburgerMenu'; // Removed
 import ImageGrid from '../components/ImageGrid';
-import Lightbox from '../components/Lightbox';
-import AboutSection from '../components/AboutSection';
-import PricingSection from '../components/PricingSection';
-import ContactSection from '../components/ContactSection';
+// Lazy load components that aren't needed on initial render
+const Lightbox = lazy(() => import('../components/Lightbox'));
+const AboutSection = lazy(() => import('../components/AboutSection'));
+const PricingSection = lazy(() => import('../components/PricingSection'));
+const ContactSection = lazy(() => import('../components/ContactSection'));
 import Footer from '../components/Footer';
 import { images } from './data/images'; // Will need update after images.ts is modified
 
@@ -127,16 +128,22 @@ const App: React.FC = () => {
           <button onClick={() => handleNavClick('pricing')} className={`hover:text-black ${activeCategory === 'pricing' ? 'text-black font-medium' : ''}`}>Pricing</button>
         </div>
 
-        {renderContent()}
+        <Suspense fallback={<div className="flex justify-center p-8">Loading...</div>}>
+          {renderContent()}
+        </Suspense>
 
-        <Lightbox
-          images={images[activeCategory as keyof typeof images] || []} // Ensure category exists
-          currentImageIndex={currentImageIndex}
-          lightboxOpen={lightboxOpen}
-          closeLightbox={closeLightbox} 
-          nextImage={nextImage} 
-          prevImage={prevImage} 
-        />
+        <Suspense fallback={null}>
+          {lightboxOpen && (
+            <Lightbox
+              images={images[activeCategory as keyof typeof images] || []} // Ensure category exists
+              currentImageIndex={currentImageIndex}
+              lightboxOpen={lightboxOpen}
+              closeLightbox={closeLightbox} 
+              nextImage={nextImage} 
+              prevImage={prevImage} 
+            />
+          )}
+        </Suspense>
       </div>
       
       <Footer />
