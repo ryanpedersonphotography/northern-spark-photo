@@ -5,9 +5,11 @@ export const images: ImageCategory = {
   'senior-grads': [
     // Selected 20 unique images with f_auto,q_auto optimization
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650292/senior-grads/_E3A3364_qb1ovi.avif", alt: "Senior graduate sitting outdoors on wooden steps, smiling.", orientation: "landscape" },
-    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650293/senior-grads/_E3A0487-Edit-2_xy0fdm.avif", alt: "Close-up portrait of a senior graduate outdoors.", orientation: "portrait" },
+    // Replacing image at index 1
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650288/senior-grads/7Y5A0066-2_e2xl5n.avif", alt: "Senior graduate portrait outdoors with lush green background.", orientation: "landscape" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650292/senior-grads/_E3A0487_sybgyz.avif", alt: "Senior graduate standing in front of a textured wall.", orientation: "portrait" },
-    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650292/senior-grads/_E3A0488_f3lhet.avif", alt: "Senior graduate portrait against a dark, textured background.", orientation: "portrait" },
+    // Replacing image at index 3
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650282/senior-grads/7Y5A0128-2_vadcax.avif", alt: "Senior graduate sitting by a lake, looking towards the water.", orientation: "landscape" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650291/senior-grads/_E3A1422_sltncd.avif", alt: "Senior graduate sitting casually on grass in sunlight.", orientation: "landscape" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650289/senior-grads/7Y5A0129_xt85oj.avif", alt: "Senior graduate standing in a sunlit field.", orientation: "landscape" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650290/senior-grads/_E3A8053_uncropped_algn4w.avif", alt: "Black and white portrait of a thoughtful senior graduate.", orientation: "portrait" },
