@@ -8,9 +8,9 @@ export const images: ImageCategory = {
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650288/senior-grads/7Y5A0066-2_e2xl5n.avif", alt: "Female senior graduate portrait outdoors against blurred green foliage.", orientation: "landscape" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650292/senior-grads/_E3A0487_sybgyz.avif", alt: "Female senior graduate portrait standing against a grey textured wall.", orientation: "portrait" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650282/senior-grads/7Y5A0128-2_vadcax.avif", alt: "Female senior graduate sitting on rocks by a calm lake, looking thoughtfully towards the water.", orientation: "landscape" }, // Kept as the one "girl near water"
-    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650291/senior-grads/_E3A1422_sltncd.avif", alt: "Male senior graduate sitting casually on sunlit grass, leaning back.", orientation: "landscape" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650253/senior-grads/7Y5A1318_ah5ztf.avif", alt: "Female senior graduate portrait outdoors, looking slightly away.", orientation: "portrait" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650289/senior-grads/7Y5A0129_xt85oj.avif", alt: "Female senior graduate standing in a sunlit field of tall grass.", orientation: "landscape" },
-    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650290/senior-grads/_E3A8053_uncropped_algn4w.avif", alt: "Thoughtful black and white close-up portrait of a male senior graduate.", orientation: "portrait" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650249/senior-grads/7Y5A1377_wk0aqf.avif", alt: "Female senior graduate portrait in nature setting, smiling.", orientation: "portrait" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650289/senior-grads/7Y5A0049_ntdcea.avif", alt: "Dramatic close-up portrait of a female senior graduate with side lighting.", orientation: "portrait" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650288/senior-grads/7Y5A0064-2_yp2jxc.avif", alt: "Candid outdoor photo of a laughing female senior graduate.", orientation: "landscape" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650286/senior-grads/7Y5A0161_vbr2ph.avif", alt: "Smiling close-up portrait of a female senior graduate.", orientation: "portrait" },
@@ -22,8 +22,8 @@ export const images: ImageCategory = {
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650255/senior-grads/7Y5A1372-2_ky4anf.avif", alt: "Close-up portrait of a female senior graduate looking at the camera.", orientation: "portrait" }, // Replaced index 15
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650266/senior-grads/7Y5A0390-3_ysxmak.avif", alt: "Male senior graduate standing outdoors in front of a rustic wooden building.", orientation: "landscape" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650264/senior-grads/7Y5A0769_hzdadg.avif", alt: "Formal studio portrait of a female senior graduate looking at camera.", orientation: "portrait" },
-    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650263/senior-grads/7Y5A0816_ngx58f.avif", alt: "Thoughtful portrait of a female senior graduate with hands clasped.", orientation: "portrait" },
-    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650261/senior-grads/7Y5A1217_zy7qrf.avif", alt: "Female senior graduate portrait against a red brick wall in an urban setting.", orientation: "portrait" }
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650263/senior-grads/7Y5A0816_ngx58f.avif", alt: "Thoughtful portrait of a female senior graduate with hands clasped.", orientation: "portrait" }
+    // Removed last image (index 19)
   ],
   nature: [
     // Selected 20 unique images with f_auto,q_auto optimization and refined alt text
