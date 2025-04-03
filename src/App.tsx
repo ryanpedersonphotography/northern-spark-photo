@@ -105,12 +105,17 @@ const App: React.FC = () => {
     // Get the images for the current category
     const categoryImages = images[activeCategory as keyof ImageCategory] || [];
       
-    // Render the image grid
-    return <ImageGrid
-      images={categoryImages}
-      windowWidth={windowWidth}
-      openLightbox={openLightbox}
-    />;
+    // Render the image grid with proper masonry layout
+    // No additional padding needed for the grid section
+    return (
+      <div className="w-full overflow-hidden">
+        <ImageGrid
+          images={categoryImages}
+          windowWidth={windowWidth}
+          openLightbox={openLightbox}
+        />
+      </div>
+    );
   };
 
   return (
