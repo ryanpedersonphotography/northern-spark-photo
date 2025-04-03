@@ -2,20 +2,20 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import Header from '../components/Header';
 import Navigation from '../components/Navigation';
-import HamburgerMenu from '../components/HamburgerMenu';
+// import HamburgerMenu from '../components/HamburgerMenu'; // Removed
 import ImageGrid from '../components/ImageGrid';
 import Lightbox from '../components/Lightbox';
 import AboutSection from '../components/AboutSection';
 import PricingSection from '../components/PricingSection';
 import ContactSection from '../components/ContactSection';
 import Footer from '../components/Footer';
-import { images } from './data/images';
+import { images } from './data/images'; // Will need update after images.ts is modified
 
 const App: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState('senior');
+  const [activeCategory, setActiveCategory] = useState('senior-grads'); // Default to senior-grads
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [menuOpen, setMenuOpen] = useState(false);
+  // const [menuOpen, setMenuOpen] = useState(false); // Removed menu state
   const [windowWidth, setWindowWidth] = useState(1024); // Default to desktop view
 
   // Track window size for responsive layout
@@ -35,12 +35,13 @@ const App: React.FC = () => {
   // Handle navigation clicks
   const handleNavClick = (category: string) => {
     setActiveCategory(category);
+    // Ensure category is valid before setting state if needed in future
   };
 
-  // Toggle hamburger menu
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
+  // // Toggle hamburger menu // Removed
+  // const toggleMenu = () => {
+  //   setMenuOpen(!menuOpen);
+  // };
 
   // Handle image click to open lightbox
   const openLightbox = (index: number) => {
@@ -53,9 +54,10 @@ const App: React.FC = () => {
     setLightboxOpen(false);
   };
 
-  // Navigate to next image
+  // Navigate to next image (Ensure category exists in images)
   const nextImage = () => {
-    if (currentImageIndex < images[activeCategory as keyof typeof images].length - 1) {
+    const currentImages = images[activeCategory as keyof typeof images] || [];
+    if (currentImageIndex < currentImages.length - 1) {
       setCurrentImageIndex(currentImageIndex + 1);
     }
   };
@@ -78,10 +80,7 @@ const App: React.FC = () => {
         } else if (e.key === 'Escape') {
           closeLightbox();
         }
-      } else if (menuOpen && e.key === 'Escape') {
-        // Close menu when ESC is pressed and menu is open
-        setMenuOpen(false);
-      }
+      } // Removed menu escape logic
     };
     
     window.addEventListener('keydown', handleKeyDown);
@@ -90,7 +89,7 @@ const App: React.FC = () => {
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [lightboxOpen, menuOpen, currentImageIndex, activeCategory]); // Dependencies that should trigger a re-binding
+  }, [lightboxOpen, currentImageIndex, activeCategory]); // Removed menuOpen dependency
 
   // Render content based on active category
   const renderContent = () => {
@@ -98,11 +97,11 @@ const App: React.FC = () => {
     if (activeCategory === 'pricing') return <PricingSection handleNavClick={handleNavClick} />;
     if (activeCategory === 'contact') return <ContactSection />;
 
-    // Otherwise render the gallery
-    const categoryImages = images[activeCategory as keyof typeof images] || [];
-    return <ImageGrid 
-      images={categoryImages} 
-      windowWidth={windowWidth} 
+    // Otherwise render the gallery for 'senior-grads' or 'nature'
+    const categoryImages = images[activeCategory as keyof typeof images] || []; // Ensure category exists
+    return <ImageGrid
+      images={categoryImages}
+      windowWidth={windowWidth}
       openLightbox={openLightbox} 
     />;
   };
@@ -110,27 +109,30 @@ const App: React.FC = () => {
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col">
       <div className="max-w-6xl mx-auto p-8 flex-grow relative">
-        <HamburgerMenu 
-          menuOpen={menuOpen} 
-          toggleMenu={toggleMenu} 
-          activeCategory={activeCategory} 
-          handleNavClick={handleNavClick} 
-          windowWidth={windowWidth}
-        />
-        
+        {/* HamburgerMenu removed */}
+
         <Header windowWidth={windowWidth} />
-        
-        <Navigation 
-          activeCategory={activeCategory} 
-          handleNavClick={handleNavClick} 
+
+        {/* Main Navigation Tabs */}
+        <Navigation
+          activeCategory={activeCategory}
+          handleNavClick={handleNavClick}
+          // Will update Navigation component separately to only show 'senior-grads' and 'nature'
         />
-        
+
+        {/* Secondary Navigation Links */}
+        <div className="flex justify-center space-x-6 mt-4 mb-8 text-sm text-gray-600 uppercase tracking-wider">
+          <button onClick={() => handleNavClick('about')} className={`hover:text-black ${activeCategory === 'about' ? 'text-black font-medium' : ''}`}>About</button>
+          <button onClick={() => handleNavClick('contact')} className={`hover:text-black ${activeCategory === 'contact' ? 'text-black font-medium' : ''}`}>Contact</button>
+          <button onClick={() => handleNavClick('pricing')} className={`hover:text-black ${activeCategory === 'pricing' ? 'text-black font-medium' : ''}`}>Pricing</button>
+        </div>
+
         {renderContent()}
-        
-        <Lightbox 
-          images={images[activeCategory as keyof typeof images]} 
-          currentImageIndex={currentImageIndex} 
-          lightboxOpen={lightboxOpen} 
+
+        <Lightbox
+          images={images[activeCategory as keyof typeof images] || []} // Ensure category exists
+          currentImageIndex={currentImageIndex}
+          lightboxOpen={lightboxOpen}
           closeLightbox={closeLightbox} 
           nextImage={nextImage} 
           prevImage={prevImage} 

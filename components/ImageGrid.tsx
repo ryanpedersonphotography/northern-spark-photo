@@ -62,6 +62,7 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
             }}
             onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
             onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+            loading="lazy" // Added lazy loading
           />
         </div>
       ))}

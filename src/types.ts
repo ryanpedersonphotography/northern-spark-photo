@@ -5,7 +5,7 @@ export interface Image {
 }
 
 export interface ImageCategory {
-  senior: Image[];
-  family: Image[];
-  fashion: Image[];
+  'senior-grads': Image[]; // Updated key
+  nature: Image[];        // Updated key
+  // Removed family and fashion keys
 }
