@@ -76,9 +76,31 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
                 position: 'relative',
                 zIndex: 1
               }}
-              onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-              onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+              onMouseOver={(e) => {
+                // Only apply hover effect on non-touch devices
+                if (window.matchMedia('(hover: hover)').matches) {
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                }
+              }}
+              onMouseOut={(e) => {
+                if (window.matchMedia('(hover: hover)').matches) {
+                  e.currentTarget.style.transform = 'scale(1)';
+                }
+              }}
               onLoad={(e) => e.currentTarget.style.opacity = '1'} 
+              // Better touch feedback for mobile devices
+              onTouchStart={(e) => {
+                e.currentTarget.style.transform = 'scale(1.03)';
+                e.currentTarget.style.opacity = '0.9';
+              }}
+              onTouchEnd={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.opacity = '1';
+              }}
+              onTouchCancel={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+                e.currentTarget.style.opacity = '1';
+              }}
               // Start with opacity 0 and reveal when loaded
               className="opacity-0"
               // Eager load the first few images (likely above the fold), lazy load the rest
