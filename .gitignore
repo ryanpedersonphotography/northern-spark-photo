@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local Assets (using Cloudinary instead)
+src/assets/images/
+
+# Temporary files (if not needed in repo)
+*.json
+*.txt
