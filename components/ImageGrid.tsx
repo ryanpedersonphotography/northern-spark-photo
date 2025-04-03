@@ -52,8 +52,8 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
           onClick={() => openLightbox(index)}
         >
           <img
-            // Use w_1200 for better grid quality, still optimized
-            src={image.src.replace('/upload/', '/upload/w_1200,')}
+            // Use w_1200 and fixed quality q_85 for grid thumbnails
+            src={image.src.replace('/upload/', '/upload/w_1200,q_85,')}
             alt={image.alt}
             style={{
               width: '100%',
