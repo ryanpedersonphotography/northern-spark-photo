@@ -109,7 +109,7 @@ const App: React.FC = () => {
 
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col">
-      <div className="max-w-6xl mx-auto p-8 flex-grow relative">
+      <div className="max-w-6xl mx-auto px-4 py-8 md:px-6 lg:px-8 flex-grow relative">
         {/* HamburgerMenu removed */}
 
         <Header windowWidth={windowWidth} />
