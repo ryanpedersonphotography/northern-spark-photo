@@ -25,12 +25,13 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
     640: 1      // 1 column for mobile
   };
 
-  // Add custom styles for masonry grid
+  // Add custom styles for masonry grid with perfectly uniform spacing
   const masonryStyles = `
     /* Custom masonry styles */
     .masonry-grid {
       display: flex;
-      width: 100%;
+      width: calc(100% + ${spacing}px); /* Compensate for gutter */
+      margin-left: -${spacing}px; /* Negative margin to align grid */
       padding: ${spacing}px;
       box-sizing: border-box;
     }
@@ -40,11 +41,6 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
       background-clip: padding-box;
     }
     
-    /* Ensure first column doesn't have extra spacing */
-    .masonry-grid-column:first-child {
-      padding-left: 0;
-    }
-    
     /* Item styling */
     .masonry-item {
       margin-bottom: ${spacing}px;
@@ -52,10 +48,16 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
       background-color: #f0f0f0;
       position: relative;
     }
+
+    /* Container styling to maintain exact spacing */
+    .masonry-container {
+      padding: ${spacing}px;
+      box-sizing: border-box;
+    }
   `;
 
   return (
-    <>
+    <div className="masonry-container" style={{ backgroundColor: 'white' }}>
       <style>{masonryStyles}</style>
       <Masonry
         breakpointCols={breakpointColumns}
@@ -130,7 +132,7 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
           </div>
         ))}
       </Masonry>
-    </>
+    </div>
   );
 };
 
