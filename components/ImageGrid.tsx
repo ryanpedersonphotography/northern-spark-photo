@@ -67,9 +67,9 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
             }}
             onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
             onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-            // Load first image eagerly with high priority (LCP), lazy load others
-            loading={index === 0 ? "eager" : "lazy"}
-            fetchPriority={index === 0 ? "high" : "auto"} // Corrected attribute name
+            // Eager load the first few images (likely above the fold), lazy load the rest
+            loading={index < 3 ? "eager" : "lazy"}
+            fetchPriority={index < 3 ? "high" : "auto"}
           />
         </div>
       ))}
