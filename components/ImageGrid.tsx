@@ -15,32 +15,32 @@ interface ImageGridProps {
 const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox }) => {
   // Determine number of columns based on screen width
   const getGridStyle = () => {
-    // Explicit grid layout based on window width with consistent uniform spacing
-    const gap = '1.25rem'; // Consistent gap for all screen sizes
+    // VSCO-style layout with minimal spacing between images
+    const gap = '4px'; // Very small gap like VSCO
     
     if (windowWidth < 640) {
       return {
         display: 'grid',
         gridTemplateColumns: '1fr',
         gap: gap,
-        margin: '0 auto',
-        width: 'calc(100% - 2rem)' // Consistent outer margin
+        margin: '0',
+        width: '100%' // Full width
       };
     } else if (windowWidth < 1024) {
       return {
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
         gap: gap,
-        margin: '0 auto',
-        width: 'calc(100% - 2rem)' // Consistent outer margin
+        margin: '0',
+        width: '100%' // Full width
       };
     } else {
       return {
         display: 'grid',
         gridTemplateColumns: '1fr 1fr 1fr',
         gap: gap,
-        margin: '0 auto',
-        width: '100%'  // Full width on desktop
+        margin: '0',
+        width: '100%' // Full width
       };
     }
   };
@@ -57,11 +57,8 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
             padding: 0,
             gridRow: image.orientation === 'portrait' ? 'span 2' : 'span 1',
             // Add aspect-ratio to reserve space and prevent layout shift
-            aspectRatio: image.orientation === 'portrait' ? '2 / 3' : '3 / 2',
-            // Add slight border radius for softer look
-            borderRadius: '3px',
-            // Add subtle shadow for depth
-            boxShadow: '0 1px 3px rgba(0,0,0,0.08)'
+            aspectRatio: image.orientation === 'portrait' ? '2 / 3' : '3 / 2'
+            // No border radius or shadow for VSCO-like clean look
           }}
           onClick={() => openLightbox(index)}
         >

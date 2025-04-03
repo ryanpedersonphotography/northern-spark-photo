@@ -94,11 +94,17 @@ const App: React.FC = () => {
 
   // Render content based on active category
   const renderContent = () => {
-    if (activeCategory === 'about') return <AboutSection handleNavClick={handleNavClick} />;
-    if (activeCategory === 'pricing') return <PricingSection handleNavClick={handleNavClick} />;
-    if (activeCategory === 'contact') return <ContactSection />;
+    // Handle non-gallery sections with padding
+    if (activeCategory === 'about') 
+      return <div className="px-4 md:px-6 lg:px-8"><AboutSection handleNavClick={handleNavClick} /></div>;
+      
+    if (activeCategory === 'pricing') 
+      return <div className="px-4 md:px-6 lg:px-8"><PricingSection handleNavClick={handleNavClick} /></div>;
+      
+    if (activeCategory === 'contact') 
+      return <div className="px-4 md:px-6 lg:px-8"><ContactSection /></div>;
 
-    // Otherwise render the gallery for 'senior-grads' or 'nature'
+    // For galleries, no padding for VSCO-style edge-to-edge grid
     const categoryImages = images[activeCategory as keyof typeof images] || []; // Ensure category exists
     return <ImageGrid
       images={categoryImages}
@@ -108,24 +114,26 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen flex flex-col">
-      <div className="max-w-6xl mx-auto px-4 py-8 md:px-6 lg:px-8 flex-grow relative">
+    <div className="bg-white min-h-screen flex flex-col">
+      <div className="max-w-6xl mx-auto py-8 flex-grow relative">
         {/* HamburgerMenu removed */}
 
-        <Header windowWidth={windowWidth} />
+        {/* Header and navigation with padding */}
+        <div className="px-4 md:px-6 lg:px-8">
+          <Header windowWidth={windowWidth} />
 
-        {/* Main Navigation Tabs */}
-        <Navigation
-          activeCategory={activeCategory}
-          handleNavClick={handleNavClick}
-          // Will update Navigation component separately to only show 'senior-grads' and 'nature'
-        />
+          {/* Main Navigation Tabs */}
+          <Navigation
+            activeCategory={activeCategory}
+            handleNavClick={handleNavClick}
+          />
 
-        {/* Secondary Navigation Links */}
-        <div className="flex justify-center space-x-6 mt-4 mb-8 text-sm text-gray-600 uppercase tracking-wider">
-          <button onClick={() => handleNavClick('about')} className={`hover:text-black ${activeCategory === 'about' ? 'text-black font-medium' : ''}`}>About</button>
-          <button onClick={() => handleNavClick('contact')} className={`hover:text-black ${activeCategory === 'contact' ? 'text-black font-medium' : ''}`}>Contact</button>
-          <button onClick={() => handleNavClick('pricing')} className={`hover:text-black ${activeCategory === 'pricing' ? 'text-black font-medium' : ''}`}>Pricing</button>
+          {/* Secondary Navigation Links */}
+          <div className="flex justify-center space-x-6 mt-4 mb-8 text-sm text-gray-600 uppercase tracking-wider">
+            <button onClick={() => handleNavClick('about')} className={`hover:text-black ${activeCategory === 'about' ? 'text-black font-medium' : ''}`}>About</button>
+            <button onClick={() => handleNavClick('contact')} className={`hover:text-black ${activeCategory === 'contact' ? 'text-black font-medium' : ''}`}>Contact</button>
+            <button onClick={() => handleNavClick('pricing')} className={`hover:text-black ${activeCategory === 'pricing' ? 'text-black font-medium' : ''}`}>Pricing</button>
+          </div>
         </div>
 
         <Suspense fallback={<div className="flex justify-center p-8">Loading...</div>}>
