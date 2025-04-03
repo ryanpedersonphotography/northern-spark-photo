@@ -52,21 +52,28 @@ const App: React.FC = () => {
     const loadImages = async () => {
       let allImages: Image[] = [];
       const category = activeCategory; // Capture current category
+      console.log(`Loading images for category: ${category}`); // DEBUG
 
       if (category === 'senior-grads' || category === 'nature') {
         try {
           const module = await import(`../data/all_${category}.json`);
-          allImages = module.default || []; // Assuming JSON is default export
+          console.log('Imported module:', module); // DEBUG
+          // Try accessing JSON directly, fallback to default
+          allImages = (module.default || module) as Image[];
+          console.log(`Loaded ${allImages?.length ?? 0} images raw.`); // DEBUG
         } catch (error) {
           console.error(`Error loading images for category ${category}:`, error);
           allImages = []; // Reset on error
         }
       }
 
-      if (allImages.length > 0) {
+      if (allImages && allImages.length > 0) {
         const shuffled = shuffleArray([...allImages]); // Shuffle a copy
-        setDisplayedImages(shuffled.slice(0, 30)); // Take first 30 shuffled images
+        const sliced = shuffled.slice(0, 30); // Take first 30 shuffled images
+        console.log(`Setting displayed images (count: ${sliced.length})`); // DEBUG
+        setDisplayedImages(sliced);
       } else {
+        console.log('No images loaded or not a gallery category, clearing displayed images.'); // DEBUG
         setDisplayedImages([]); // Clear images if not a gallery category or error
       }
       setCurrentImageIndex(0); // Reset lightbox index on category change
