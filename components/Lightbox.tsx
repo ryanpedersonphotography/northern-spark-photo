@@ -44,8 +44,8 @@ const Lightbox: React.FC<LightboxProps> = ({
       
       <div className="flex items-center justify-center h-screen w-full">
         <img
-          // Add width transformation for lightbox view (larger than grid)
-          src={currentImage.src.replace('/upload/', '/upload/w_1600,')}
+          // Enhanced quality for lightbox view to showcase HDR images
+          src={currentImage.src.replace('/upload/f_auto,q_auto', '/upload/f_auto,q_auto:best,w_1600')}
           alt={currentImage.alt}
           style={{
             width: '100%',
@@ -55,9 +55,7 @@ const Lightbox: React.FC<LightboxProps> = ({
         />
       </div>
       
-      <div className="absolute bottom-5 w-full text-center text-black text-sm opacity-70">
-        {currentImage.alt}
-      </div>
+      {/* Alt text is still used for accessibility in the img tag, but not displayed visually here */}
       
       {!isFirstImage && (
         <button 
