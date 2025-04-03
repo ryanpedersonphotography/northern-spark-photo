@@ -15,7 +15,7 @@ interface ImageGridProps {
 
 const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox }) => {
   // Define uniform spacing size
-  const spacing = 8; // 8px spacing in all directions
+  const spacing = 16; // 16px spacing in all directions (doubled from 8px)
   
   // Configure Masonry breakpoints for responsive columns
   const breakpointColumns = {
