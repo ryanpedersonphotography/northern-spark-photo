@@ -10,10 +10,24 @@ const AboutSection = lazy(() => import('../components/AboutSection'));
 const PricingSection = lazy(() => import('../components/PricingSection'));
 const ContactSection = lazy(() => import('../components/ContactSection'));
 import Footer from '../components/Footer';
-import { images } from './data/images'; // Will need update after images.ts is modified
+// import { images } from './data/images'; // Removed static import
+import { Image } from './types'; // Import Image type
+
+// Fisher-Yates (Knuth) Shuffle function
+const shuffleArray = (array: any[]) => {
+  let currentIndex = array.length, randomIndex;
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+  return array;
+}
 
 const App: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('senior-grads'); // Default to senior-grads
+  const [displayedImages, setDisplayedImages] = useState<Image[]>([]); // State for shuffled images
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   // const [menuOpen, setMenuOpen] = useState(false); // Removed menu state
@@ -32,6 +46,34 @@ const App: React.FC = () => {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  // Effect to load and shuffle images when category changes
+  useEffect(() => {
+    const loadImages = async () => {
+      let allImages: Image[] = [];
+      const category = activeCategory; // Capture current category
+
+      if (category === 'senior-grads' || category === 'nature') {
+        try {
+          const module = await import(`../data/all_${category}.json`);
+          allImages = module.default || []; // Assuming JSON is default export
+        } catch (error) {
+          console.error(`Error loading images for category ${category}:`, error);
+          allImages = []; // Reset on error
+        }
+      }
+
+      if (allImages.length > 0) {
+        const shuffled = shuffleArray([...allImages]); // Shuffle a copy
+        setDisplayedImages(shuffled.slice(0, 30)); // Take first 30 shuffled images
+      } else {
+        setDisplayedImages([]); // Clear images if not a gallery category or error
+      }
+      setCurrentImageIndex(0); // Reset lightbox index on category change
+    };
+
+    loadImages();
+  }, [activeCategory]); // Rerun when activeCategory changes
 
   // Handle navigation clicks
   const handleNavClick = (category: string) => {
@@ -55,16 +97,17 @@ const App: React.FC = () => {
     setLightboxOpen(false);
   };
 
-  // Navigate to next image (Ensure category exists in images)
+  // Navigate to next image
   const nextImage = () => {
-    const currentImages = images[activeCategory as keyof typeof images] || [];
-    if (currentImageIndex < currentImages.length - 1) {
+    // Use displayedImages state
+    if (currentImageIndex < displayedImages.length - 1) {
       setCurrentImageIndex(currentImageIndex + 1);
     }
   };
 
   // Navigate to previous image
   const prevImage = () => {
+    // Use displayedImages state
     if (currentImageIndex > 0) {
       setCurrentImageIndex(currentImageIndex - 1);
     }
@@ -104,12 +147,15 @@ const App: React.FC = () => {
     if (activeCategory === 'contact') 
       return <div className="px-4 md:px-6 lg:px-8"><ContactSection /></div>;
 
-    // For galleries, no padding for VSCO-style edge-to-edge grid
-    const categoryImages = images[activeCategory as keyof typeof images] || []; // Ensure category exists
+    // Render the shuffled image grid if images are loaded
+    if (displayedImages.length === 0 && (activeCategory === 'senior-grads' || activeCategory === 'nature')) {
+       return <div className="flex justify-center p-8">Loading images...</div>; // Loading state
+    }
+
     return <ImageGrid
-      images={categoryImages}
+      images={displayedImages} // Use shuffled state
       windowWidth={windowWidth}
-      openLightbox={openLightbox} 
+      openLightbox={openLightbox}
     />;
   };
 
@@ -141,9 +187,9 @@ const App: React.FC = () => {
         </Suspense>
 
         <Suspense fallback={null}>
-          {lightboxOpen && (
+          {lightboxOpen && displayedImages.length > 0 && ( // Check if images exist before rendering Lightbox
             <Lightbox
-              images={images[activeCategory as keyof typeof images] || []} // Ensure category exists
+              images={displayedImages} // Use shuffled state
               currentImageIndex={currentImageIndex}
               lightboxOpen={lightboxOpen}
               closeLightbox={closeLightbox} 
