@@ -25,14 +25,13 @@ const ContactSection: React.FC = () => {
     setError('');
     
     try {
-      // Using the Netlify Forms API
+      const form = e.target as HTMLFormElement;
+      const formData = new FormData(form);
+      
       const response = await fetch('/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          'form-name': 'contact',
-          ...formState
-        }).toString()
+        body: new URLSearchParams(formData as any).toString()
       });
       
       if (!response.ok) {
@@ -82,6 +81,7 @@ const ContactSection: React.FC = () => {
               method="POST"
               data-netlify="true"
               netlify-honeypot="bot-field"
+              action="/"
             >
               {/* Hidden field for Netlify Forms */}
               <input type="hidden" name="form-name" value="contact" />
