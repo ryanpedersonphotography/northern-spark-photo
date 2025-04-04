@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import Masonry from 'react-masonry-css';
+import { imagePresets } from '../src/utils/cloudinary';
 
 interface Image {
   src: string;
@@ -13,122 +14,110 @@ interface ImageGridProps {
   openLightbox: (index: number) => void;
 }
 
-const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox }) => {
-  // Define uniform spacing size
-  const spacing = 16; // 16px spacing in all directions (doubled from 8px)
+/**
+ * Optimized Image component with loading state and lazy loading
+ */
+const GridImage = memo(({ 
+  image, 
+  index, 
+  handleClick
+}: { 
+  image: Image; 
+  index: number;
+  handleClick: () => void;
+}) => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const isLandscape = image.orientation === 'landscape';
   
-  // Configure Masonry breakpoints for responsive columns
+  // Precompute image urls
+  const placeholderUrl = imagePresets.gridPlaceholder(image.src);
+  const fullImageUrl = imagePresets.grid(image.src);
+  
+  // Handle image load completion
+  const handleLoad = useCallback(() => {
+    setIsLoaded(true);
+  }, []);
+  
+  return (
+    <div 
+      className="masonry-item" 
+      style={{
+        cursor: 'pointer',
+        aspectRatio: isLandscape ? '3/2' : '2/3',
+        position: 'relative',
+        overflow: 'hidden'
+      }} 
+      onClick={handleClick}
+    >
+      {/* Placeholder */}
+      <img
+        src={placeholderUrl}
+        alt=""
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ filter: 'blur(10px)' }}
+        aria-hidden="true"
+      />
+      
+      {/* Main image */}
+      <img
+        src={fullImageUrl}
+        alt={image.alt}
+        className={`w-full h-full object-cover absolute inset-0 z-10 transition-opacity duration-300 ease-in ${
+          isLoaded ? 'opacity-100' : 'opacity-0'
+        }`}
+        loading={index < 6 ? "eager" : "lazy"}
+        fetchPriority={index < 6 ? "high" : "auto"}
+        onLoad={handleLoad}
+        style={{
+          transition: 'transform 0.3s ease, opacity 0.3s ease',
+        }}
+        onMouseOver={(e) => {
+          // Apply hover effect only on non-touch devices
+          if (window.matchMedia('(hover: hover)').matches) {
+            e.currentTarget.style.transform = 'scale(1.03)';
+          }
+        }}
+        onMouseOut={(e) => {
+          if (window.matchMedia('(hover: hover)').matches) {
+            e.currentTarget.style.transform = 'scale(1)';
+          }
+        }}
+      />
+    </div>
+  );
+});
+
+GridImage.displayName = 'GridImage';
+
+const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox }) => {
+  // Configure responsive columns for Masonry layout
   const breakpointColumns = {
-    default: 3, // Default 3 columns for desktop
-    1024: 3,    // 3 columns for large screens
-    768: 2,     // 2 columns for tablets
-    640: 1      // 1 column for mobile
+    default: 3,   // Desktop (default)
+    1024: 3,      // Large tablets/small laptops
+    768: 2,       // Tablets
+    640: 1        // Mobile phones
   };
-
-  // Add custom styles for masonry grid with perfectly uniform spacing
-  const masonryStyles = `
-    /* Custom masonry styles */
-    .masonry-grid {
-      display: flex;
-      width: calc(100% + ${spacing}px); /* Compensate for gutter */
-      margin-left: -${spacing}px; /* Negative margin to align grid */
-      padding: ${spacing}px;
-      box-sizing: border-box;
-    }
-    
-    .masonry-grid-column {
-      padding-left: ${spacing}px; /* gutter size */
-      background-clip: padding-box;
-    }
-    
-    /* Item styling */
-    .masonry-item {
-      margin-bottom: ${spacing}px;
-      overflow: hidden;
-      background-color: #f0f0f0;
-      position: relative;
-    }
-
-    /* Container styling to maintain exact spacing */
-    .masonry-container {
-      padding: ${spacing}px;
-      box-sizing: border-box;
-    }
-  `;
+  
+  // Optimize by memoizing the click handler for each image
+  const getClickHandler = useCallback(
+    (index: number) => () => openLightbox(index),
+    [openLightbox]
+  );
 
   return (
-    <div className="masonry-container" style={{ backgroundColor: 'white' }}>
-      <style>{masonryStyles}</style>
+    <div className="p-4">
       <Masonry
         breakpointCols={breakpointColumns}
-        className="masonry-grid"
-        columnClassName="masonry-grid-column"
+        className="flex -ml-4 w-auto"
+        columnClassName="pl-4 bg-clip-padding"
       >
         {images.map((image, index) => (
-          <div 
-            key={index}
-            className="masonry-item"
-            style={{
-              cursor: 'pointer',
-              borderRadius: 0, // No border radius for clean look
-              // Set natural aspect ratio based on orientation
-              // Portrait images will be taller
-              aspectRatio: image.orientation === 'portrait' ? '2/3' : '3/2',
-              display: 'block'
-            }}
-            onClick={() => openLightbox(index)}
-          >
-            {/* Low quality image placeholder */}
-            <div className="w-full h-full relative">
-              <img
-                src={image.src.replace('/upload/f_auto,q_auto', '/upload/f_auto,q_auto:low,w_20,e_blur:1000')}
-                alt=""
-                className="absolute inset-0 w-full h-full object-cover blur-lg"
-                aria-hidden="true"
-              />
-              {/* Main image */}
-              <img
-                src={image.src.replace('/upload/f_auto,q_auto', '/upload/f_auto,q_auto:best,w_1200')}
-                alt={image.alt}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  transition: 'transform 0.5s ease, opacity 0.3s ease',
-                  display: 'block',
-                  position: 'relative',
-                  zIndex: 1
-                }}
-                onMouseOver={(e) => {
-                  // Only apply hover effect on non-touch devices
-                  if (window.matchMedia('(hover: hover)').matches) {
-                    e.currentTarget.style.transform = 'scale(1.05)';
-                  }
-                }}
-                onMouseOut={(e) => {
-                  if (window.matchMedia('(hover: hover)').matches) {
-                    e.currentTarget.style.transform = 'scale(1)';
-                  }
-                }}
-                onLoad={(e) => e.currentTarget.style.opacity = '1'} 
-                // Better touch feedback
-                onTouchStart={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.03)';
-                  e.currentTarget.style.opacity = '0.9';
-                }}
-                onTouchEnd={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)';
-                  e.currentTarget.style.opacity = '1';
-                }}
-                onTouchCancel={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)';
-                  e.currentTarget.style.opacity = '1';
-                }}
-                className="opacity-0" // Start hidden and fade in on load
-                loading={index < 3 ? "eager" : "lazy"}
-                fetchPriority={index < 3 ? "high" : "auto"}
-              />
-            </div>
+          <div key={`${image.src}-${index}`} className="mb-4">
+            <GridImage 
+              image={image} 
+              index={index} 
+              handleClick={getClickHandler(index)} 
+            />
           </div>
         ))}
       </Masonry>
@@ -136,4 +125,4 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
   );
 };
 
-export default ImageGrid;
+export default memo(ImageGrid);
