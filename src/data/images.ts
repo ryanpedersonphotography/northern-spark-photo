@@ -1,7 +1,9 @@
 import { ImageCategory } from '../types';
+import familyImages from './all_family.json'; // Import the new family data
 
 // Using Cloudinary URLs for optimized images - Curated for uniqueness
 export const images: ImageCategory = {
+  family: familyImages, // Add the family category
   'senior-grads': [
     // Selected 20 unique images with f_auto,q_auto optimization and refined alt text
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650292/senior-grads/_E3A3364_qb1ovi.avif", alt: "Smiling female senior graduate sitting casually on outdoor wooden steps.", orientation: "landscape" },

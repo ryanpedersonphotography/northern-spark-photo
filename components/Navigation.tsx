@@ -15,7 +15,12 @@ const Navigation: React.FC<NavigationProps> = ({ activeCategory, handleNavClick 
         >
           Senior Grads
         </button>
-        {/* Removed Families button */}
+        <button
+          onClick={() => handleNavClick('family')} // Added Family category
+          className={`mx-2 px-6 py-2 border-none bg-transparent cursor-pointer text-sm uppercase tracking-wide ${activeCategory === 'family' ? 'text-gray-800 font-normal' : 'text-gray-500 font-light'}`} // Added active check
+        >
+          Family
+        </button>
         {/* Removed Fashion button */}
         <button
           onClick={() => handleNavClick('nature')} // Added Nature category
