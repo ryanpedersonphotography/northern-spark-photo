@@ -11,7 +11,7 @@ export const images: ImageCategory = {
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650292/senior-grads/_E3A0487_sybgyz.avif", alt: "Female senior graduate portrait standing against a grey textured wall.", orientation: "portrait" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650282/senior-grads/7Y5A0128-2_vadcax.avif", alt: "Female senior graduate sitting on rocks by a calm lake, looking thoughtfully towards the water.", orientation: "landscape" }, // Kept as the one "girl near water"
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650253/senior-grads/7Y5A1318_ah5ztf.avif", alt: "Female senior graduate portrait outdoors, looking slightly away.", orientation: "portrait" },
-    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650289/senior-grads/7Y5A0129_xt85oj.avif", alt: "Female senior graduate standing in a sunlit field of tall grass.", orientation: "landscape" },
+    // Removed image at index 5 (originally 7Y5A0129_xt85oj.avif)
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650249/senior-grads/7Y5A1377_wk0aqf.avif", alt: "Female senior graduate portrait in nature setting, smiling.", orientation: "portrait" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650289/senior-grads/7Y5A0049_ntdcea.avif", alt: "Dramatic close-up portrait of a female senior graduate with side lighting.", orientation: "portrait" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743650288/senior-grads/7Y5A0064-2_yp2jxc.avif", alt: "Candid outdoor photo of a laughing female senior graduate.", orientation: "landscape" },
