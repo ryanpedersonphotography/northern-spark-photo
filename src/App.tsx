@@ -13,7 +13,7 @@ import { images } from './data/images'; // Import the images
 import { ImageCategory } from './types';
 
 const App: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState('senior-grads'); // Default to senior-grads
+  const [activeCategory, setActiveCategory] = useState('family'); // Default to family gallery
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [windowWidth, setWindowWidth] = useState(1024); // Default to desktop view
