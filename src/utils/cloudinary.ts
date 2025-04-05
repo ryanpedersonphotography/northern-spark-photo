@@ -1,5 +1,5 @@
 /**
- * Cloudinary image utilities with mobile optimization
+ * Cloudinary image utilities
  */
 
 // Base Cloudinary domain
@@ -8,29 +8,23 @@ export const CLOUDINARY_BASE = 'https://res.cloudinary.com/dtszzijrd';
 // Type for image transformations
 export type CloudinaryTransformation = {
   width?: number;
-  height?: number;
   quality?: 'auto' | 'eco' | 'good' | 'best' | 'low';
   format?: 'auto';
   effects?: string[];
   crop?: string;
   gravity?: string;
-  dpr?: string;
 };
 
-/**
- * Create an optimized Cloudinary URL with transformations
- */
+// Function to create optimized Cloudinary URLs
 export function getOptimizedUrl(
   url: string,
   {
     width = undefined,
-    height = undefined,
     quality = 'auto',
     format = 'auto',
     effects = ['auto_color'],
     crop = undefined,
-    gravity = undefined,
-    dpr = undefined
+    gravity = undefined
   }: CloudinaryTransformation = {}
 ): string {
   // Extract the version and path part from original URL
@@ -54,15 +48,9 @@ export function getOptimizedUrl(
   // Add width if specified
   if (width) transformations.push(`w_${width}`);
   
-  // Add height if specified
-  if (height) transformations.push(`h_${height}`);
-  
   // Add crop and gravity if specified
   if (crop) transformations.push(`c_${crop}`);
   if (gravity) transformations.push(`g_${gravity}`);
-  
-  // Add DPR setting for responsive images
-  if (dpr) transformations.push(`dpr_${dpr}`);
   
   // Add effects
   if (effects && effects.length > 0) {
@@ -77,56 +65,31 @@ export function getOptimizedUrl(
   return `${CLOUDINARY_BASE}/image/upload/${transformations.join(',')}/${versionPart}/${imageId}`;
 }
 
-// Get device pixel ratio for better mobile display
-const getDPR = () => {
-  if (typeof window === 'undefined') return '1.0';
-  return window.devicePixelRatio ? Math.min(window.devicePixelRatio, 2).toFixed(1) : '1.0';
-};
-
-/**
- * Preset transformations for common use cases with mobile optimization
- */
+// Preset transformations for common use cases
 export const imagePresets = {
-  // Extra small image for thumbnails on mobile
   thumbnail: (url: string) => getOptimizedUrl(url, { 
-    width: 200, 
+    width: 400, 
     quality: 'auto', 
-    effects: ['auto_color'],
-    dpr: getDPR()
+    effects: ['auto_color'] 
   }),
-  
-  // Mobile-optimized grid images
   grid: (url: string) => getOptimizedUrl(url, { 
-    width: window.innerWidth < 640 ? 400 : 800, 
-    quality: window.innerWidth < 640 ? 'good' : 'auto', 
-    effects: ['auto_color'],
-    dpr: getDPR()
+    width: 800, 
+    quality: 'auto', 
+    effects: ['auto_color'] 
   }),
-  
-  // Ultra-small placeholder for quick loading
   gridPlaceholder: (url: string) => getOptimizedUrl(url, { 
     width: 20, 
     quality: 'low', 
-    effects: ['auto_color', 'blur:1000'],
-    format: 'auto'
+    effects: ['auto_color', 'blur:1000'] 
   }),
-  
-  // High quality for lightbox view
   lightbox: (url: string) => getOptimizedUrl(url, { 
-    width: window.innerWidth < 640 ? 800 : 1600, 
+    width: 1600, 
     quality: 'best', 
-    effects: ['auto_color'],
-    dpr: getDPR()
+    effects: ['auto_color'] 
   }),
-  
-  // Medium quality for preview
   previewImage: (url: string) => getOptimizedUrl(url, { 
-    width: window.innerWidth < 640 ? 600 : 1200, 
+    width: 1200, 
     quality: 'auto', 
-    effects: ['auto_color'],
-    dpr: getDPR()
+    effects: ['auto_color'] 
   }),
-  
-  // Custom transformation for flexible needs
-  custom: (url: string, options: CloudinaryTransformation) => getOptimizedUrl(url, options)
 };
