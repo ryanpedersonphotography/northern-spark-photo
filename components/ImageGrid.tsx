@@ -1,6 +1,7 @@
-import React, { useState, useCallback, memo } from 'react';
+import React, { useState, useCallback, memo, useEffect, useMemo } from 'react';
 import Masonry from 'react-masonry-css';
 import { imagePresets } from '../src/utils/cloudinary';
+import OptimizedImage from './OptimizedImage';
 
 interface Image {
   src: string;
@@ -15,72 +16,51 @@ interface ImageGridProps {
 }
 
 /**
- * Optimized Image component with loading state and lazy loading
+ * Mobile-optimized image component with progressive loading strategy
  */
 const GridImage = memo(({ 
   image, 
   index, 
-  handleClick
+  handleClick,
+  isVisible,
+  priority
 }: { 
   image: Image; 
   index: number;
   handleClick: () => void;
+  isVisible: boolean;
+  priority: boolean;
 }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
   const isLandscape = image.orientation === 'landscape';
   
-  // Precompute image urls
-  const placeholderUrl = imagePresets.gridPlaceholder(image.src);
-  const fullImageUrl = imagePresets.grid(image.src);
-  
-  // Handle image load completion
-  const handleLoad = useCallback(() => {
-    setIsLoaded(true);
+  // Calculate image size based on screen width - much smaller for mobile
+  const imageSize = useMemo(() => {
+    // 400px for mobile, 800px for tablet, 1200px for desktop
+    return window.innerWidth < 640 ? 400 : window.innerWidth < 1024 ? 800 : 1200;
   }, []);
-  
+
   return (
     <div 
       className="masonry-item" 
       style={{
         cursor: 'pointer',
-        aspectRatio: isLandscape ? '3/2' : '2/3',
-        position: 'relative',
-        overflow: 'hidden'
+        width: '100%',
       }} 
-      onClick={handleClick}
     >
-      {/* Placeholder */}
-      <img
-        src={placeholderUrl}
-        alt=""
-        className="absolute inset-0 w-full h-full object-cover"
-        style={{ filter: 'blur(10px)' }}
-        aria-hidden="true"
-      />
-      
-      {/* Main image */}
-      <img
-        src={fullImageUrl}
+      <OptimizedImage
+        src={image.src}
         alt={image.alt}
-        className={`w-full h-full object-cover absolute inset-0 z-10 transition-opacity duration-300 ease-in ${
-          isLoaded ? 'opacity-100' : 'opacity-0'
-        }`}
-        loading={index < 6 ? "eager" : "lazy"}
-        fetchPriority={index < 6 ? "high" : "auto"}
-        onLoad={handleLoad}
-        style={{
-          transition: 'transform 0.3s ease, opacity 0.3s ease',
-        }}
-        onMouseOver={(e) => {
-          // Apply hover effect only on non-touch devices
-          if (window.matchMedia('(hover: hover)').matches) {
-            e.currentTarget.style.transform = 'scale(1.03)';
-          }
-        }}
-        onMouseOut={(e) => {
-          if (window.matchMedia('(hover: hover)').matches) {
-            e.currentTarget.style.transform = 'scale(1)';
-          }
+        preset="grid"
+        orientation={isLandscape ? 'landscape' : 'portrait'}
+        width={imageSize}
+        height={isLandscape ? Math.round(imageSize * 0.66) : Math.round(imageSize * 1.5)}
+        loading={priority ? 'eager' : 'lazy'}
+        priority={priority ? 'high' : 'low'}
+        onClick={handleClick}
+        customOptions={{
+          width: imageSize,
+          quality: window.innerWidth < 640 ? 'good' : 'auto',
+          effects: ['auto_color']
         }}
       />
     </div>
@@ -89,8 +69,15 @@ const GridImage = memo(({
 
 GridImage.displayName = 'GridImage';
 
+/**
+ * Mobile-optimized masonry grid with intersection observer
+ * for loading only visible images
+ */
 const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox }) => {
-  // Configure responsive columns for Masonry layout
+  // Track visible elements for lazy loading
+  const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
+  
+  // Configure responsive columns for Masonry layout - fewer columns on mobile
   const breakpointColumns = {
     default: 3,   // Desktop (default)
     1024: 3,      // Large tablets/small laptops
@@ -103,6 +90,38 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
     (index: number) => () => openLightbox(index),
     [openLightbox]
   );
+  
+  // Set up intersection observer for lazy loading
+  useEffect(() => {
+    // Create intersection observer to load images only when they're near viewport
+    const options = {
+      root: null, // viewport
+      rootMargin: '200px 0px', // 200px margin above and below viewport
+      threshold: 0.01 // Trigger as soon as 1% of element is visible
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const index = parseInt(entry.target.getAttribute('data-index') || '0', 10);
+          setVisibleItems(prev => new Set([...prev, index]));
+          // Stop observing once visible
+          observer.unobserve(entry.target);
+        }
+      });
+    }, options);
+    
+    // Start observing all image containers
+    const containers = document.querySelectorAll('.image-container');
+    containers.forEach(container => {
+      observer.observe(container);
+    });
+    
+    return () => {
+      // Clean up on unmount
+      observer.disconnect();
+    };
+  }, [images.length]);
 
   return (
     <div className="p-4">
@@ -112,11 +131,17 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
         columnClassName="pl-4 bg-clip-padding"
       >
         {images.map((image, index) => (
-          <div key={`${image.src}-${index}`} className="mb-4">
+          <div 
+            key={`${image.src}-${index}`} 
+            className="mb-4 image-container" 
+            data-index={index}
+          >
             <GridImage 
               image={image} 
               index={index} 
-              handleClick={getClickHandler(index)} 
+              handleClick={getClickHandler(index)}
+              isVisible={visibleItems.has(index)}
+              priority={index < 4} // Only the first 4 images are high priority
             />
           </div>
         ))}
