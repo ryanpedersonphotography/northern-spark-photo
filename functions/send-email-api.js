@@ -1,7 +1,7 @@
 // functions/send-email-api.js
-// This is an alternative implementation using Brevo's API instead of SMTP
+// Uses Nodemailer to send email via SMTP
 
-import https from 'https';
+import nodemailer from 'nodemailer';
 
 export const handler = async (event, context) => {
   console.log(`\n--- Function Invoked ---`);
@@ -47,24 +47,13 @@ export const handler = async (event, context) => {
     console.log("Required fields validation passed.");
 
     // Prepare the data for Brevo API
-    console.log("Preparing data for Brevo API...");
-    const brevoData = {
-      sender: {
-        name: "Northern Spark Website", // Or use data.name if preferred
-        email: "noreply@northernspark.co" // IMPORTANT: Ensure this sender is verified in Brevo
-      },
-      to: [
-        {
-          email: "northernsparkstudio@gmail.com",
-          name: "Northern Spark Studio"
-        }
-      ],
-      replyTo: {
-        email: data.email,
-        name: data.name
-      },
-      subject: data.subject || `New message from ${data.name} via Northern Spark website`,
-      htmlContent: `
+    console.log("Preparing email data for Nodemailer...");
+    const mailOptions = {
+      from: `"Northern Spark Website" <${process.env.SMTP_USER || 'noreply@example.com'}>`, // Sender address (use configured SMTP user or a default)
+      to: "northernsparkstudio@gmail.com", // List of receivers
+      replyTo: `"${data.name}" <${data.email}>`, // Reply-to address
+      subject: data.subject || `New message from ${data.name} via Northern Spark website`, // Subject line
+      html: `
         <div style="font-family: Arial, sans-serif; line-height: 1.6;">
           <h2>New Contact Form Submission</h2>
           <p><strong>From:</strong> ${data.name}</p>
@@ -78,26 +67,40 @@ export const handler = async (event, context) => {
             This message was sent from the contact form on Northern Spark website
           </p>
         </div>
-      `
+      ` // html body
     };
-    console.log("Brevo API data prepared.");
+    console.log("Nodemailer mailOptions prepared.");
 
-    // Send the request to Brevo API
-    console.log("Attempting to send email via Brevo API...");
-    const apiKey = process.env.BREVO_API_KEY;
-    if (!apiKey) {
-        console.error("BREVO_API_KEY environment variable is not set.");
-        // Optionally use fallback for local testing, but log a warning
-        // const fallbackApiKey = 'xkeysib-40a5744b12cba907e8a02423935439621ace2aae50a';
-        // console.warn("Using hardcoded fallback API key for testing. DO NOT use in production.");
-        // apiKey = fallbackApiKey;
-        // If no fallback desired:
-        throw new Error("Brevo API key is missing. Set BREVO_API_KEY environment variable.");
+    // Check for required SMTP environment variables
+    console.log("Checking for SMTP environment variables...");
+    const requiredEnvVars = ['SMTP_HOST', 'SMTP_PORT', 'SMTP_USER', 'SMTP_PASS'];
+    const missingEnvVars = requiredEnvVars.filter(v => !process.env[v]);
+    if (missingEnvVars.length > 0) {
+        const message = `Missing required SMTP environment variables: ${missingEnvVars.join(', ')}`;
+        console.error(message);
+        throw new Error(message); // Throw error to be caught below
     }
+    console.log("SMTP environment variables found.");
 
-    const response = await makeRequest(brevoData, apiKey);
-    console.log("Successfully sent email via Brevo API.");
-    // console.log("Brevo API Response:", response); // Log Brevo's success response if needed
+    // Create a transporter object using the default SMTP transport
+    console.log("Creating Nodemailer transporter...");
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT, 10), // Ensure port is a number
+      secure: parseInt(process.env.SMTP_PORT, 10) === 465, // true for 465, false for other ports
+      auth: {
+        user: process.env.SMTP_USER, // SMTP username
+        pass: process.env.SMTP_PASS, // SMTP password
+      },
+    });
+    console.log("Nodemailer transporter created.");
+
+    // Send mail with defined transport object
+    console.log("Attempting to send email via Nodemailer (SMTP)...");
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Successfully sent email via Nodemailer.");
+    console.log("Nodemailer Message sent: %s", info.messageId);
+    // console.log("Nodemailer Preview URL: %s", nodemailer.getTestMessageUrl(info)); // Only available when using ethereal.email
 
     // Return success response
     console.log("Returning success response to client.");
@@ -133,63 +136,4 @@ export const handler = async (event, context) => {
     };
   }
 };
-
-// Helper function to make the API request
-function makeRequest(data, apiKey) {
-  console.log("Executing makeRequest helper function...");
-  return new Promise((resolve, reject) => {
-    const options = {
-      hostname: 'api.brevo.com',
-      path: '/v3/smtp/email',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'api-key': apiKey,
-      }
-    };
-    console.log("Brevo API Request Options:", JSON.stringify(options, null, 2));
-    // console.log("Brevo API Request Body:", JSON.stringify(data, null, 2)); // Log request body if needed
-
-    const req = https.request(options, (res) => {
-      let responseBody = '';
-      console.log(`Brevo API Response Status Code: ${res.statusCode}`);
-      // console.log(`Brevo API Response Headers: ${JSON.stringify(res.headers)}`);
-
-      res.setEncoding('utf8');
-      res.on('data', (chunk) => {
-        responseBody += chunk;
-      });
-
-      res.on('end', () => {
-        console.log("Brevo API Response Body:", responseBody);
-        if (res.statusCode >= 200 && res.statusCode < 300) {
-          console.log("Brevo API request successful.");
-          resolve(responseBody);
-        } else {
-          console.error(`Brevo API request failed with status ${res.statusCode}.`);
-          // Attempt to parse error response from Brevo
-          let errorMessage = `Brevo API Error (${res.statusCode})`;
-          try {
-            const errorData = JSON.parse(responseBody);
-            errorMessage += `: ${errorData.message || responseBody}`;
-          } catch (parseError) {
-            errorMessage += `: ${responseBody}`; // Use raw response if not JSON
-          }
-          console.error("Parsed Error Message:", errorMessage);
-          reject(new Error(errorMessage));
-        }
-      });
-    });
-
-    req.on('error', (error) => {
-      console.error('HTTPS Request Error:', error.message);
-      reject(new Error(`Network or request error: ${error.message}`));
-    });
-
-    // Send the data
-    console.log("Writing data to Brevo API request...");
-    req.write(JSON.stringify(data));
-    req.end();
-    console.log("Brevo API request sent.");
-  });
-}
+// Removed Brevo-specific makeRequest helper function
