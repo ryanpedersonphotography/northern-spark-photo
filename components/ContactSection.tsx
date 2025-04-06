@@ -16,12 +16,12 @@ const ContactSection: React.FC = () => {
       {/* Removed Services List */}
 
       <h3 className="text-xl font-light mb-4">Send a Message</h3>
-      <form className="grid gap-4 max-w-md">
-        <input type="text" placeholder="Your Name" className="p-3 border border-gray-300" required />
-        <input type="email" placeholder="Your Email" className="p-3 border border-gray-300" required />
-        <input type="tel" placeholder="Your Phone" className="p-3 border border-gray-300" />
+      <form action="https://formspree.io/f/xwplwekq" method="POST" className="grid gap-4 max-w-md">
+        <input type="text" name="name" placeholder="Your Name" className="p-3 border border-gray-300" required />
+        <input type="email" name="email" placeholder="Your Email" className="p-3 border border-gray-300" required />
+        <input type="tel" name="phone" placeholder="Your Phone" className="p-3 border border-gray-300" />
         {/* Removed Service Select Dropdown */}
-        <textarea placeholder="Your Message (Tell us about your senior!)" rows={5} className="p-3 border border-gray-300" required></textarea>
+        <textarea name="message" placeholder="Your Message (Tell us about your senior!)" rows={5} className="p-3 border border-gray-300" required></textarea>
         <button type="submit" className="p-3 bg-gray-800 text-white cursor-pointer hover:bg-gray-700 transition-colors">Send Message</button>
       </form>
     </div>
