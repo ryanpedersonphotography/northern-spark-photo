@@ -34,9 +34,9 @@ exports.handler = async function(event, context) {
       to: [
         {
           // IMPORTANT: Replace with your actual email address
-          email: "your-email@example.com",
+          email: "northernsparkstudio@gmail.com",
           // IMPORTANT: Replace with your name or company name
-          name: "Northern Spark Photography"
+          name: "Northern Spark Studio"
         }
       ],
       replyTo: {
