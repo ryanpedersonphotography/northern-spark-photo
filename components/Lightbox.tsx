@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { optimizeCloudinaryUrl } from '../src/utils/cloudinary';
 
 interface Image {
   src: string;
@@ -25,9 +26,113 @@ const Lightbox: React.FC<LightboxProps> = ({
 }) => {
   if (!lightboxOpen || !images || images.length === 0) return null;
   
+  const [isLoading, setIsLoading] = React.useState(true);
+  
   const currentImage = images[currentImageIndex];
   const isFirstImage = currentImageIndex === 0;
   const isLastImage = currentImageIndex === images.length - 1;
+  
+  // Reset loading state when image changes
+  React.useEffect(() => {
+    setIsLoading(true);
+  }, [currentImageIndex]);
+  
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!lightboxOpen) return;
+      
+      switch (e.key) {
+        case 'ArrowLeft':
+          if (!isFirstImage) prevImage();
+          break;
+        case 'ArrowRight':
+          if (!isLastImage) nextImage();
+          break;
+        case 'Escape':
+          closeLightbox();
+          break;
+        default:
+          break;
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [lightboxOpen, nextImage, prevImage, closeLightbox, isFirstImage, isLastImage]);
+  
+  // Handle touch navigation
+  useEffect(() => {
+    let touchStartX = 0;
+    let touchEndX = 0;
+    
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartX = e.changedTouches[0].screenX;
+    };
+    
+    const handleTouchEnd = (e: TouchEvent) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    };
+    
+    const handleSwipe = () => {
+      // Minimum swipe distance (in px)
+      const minSwipeDistance = 50;
+      
+      const distance = touchEndX - touchStartX;
+      
+      if (Math.abs(distance) < minSwipeDistance) return;
+      
+      if (distance > 0 && !isFirstImage) {
+        // Swiped right -> show previous image
+        prevImage();
+      } else if (distance < 0 && !isLastImage) {
+        // Swiped left -> show next image
+        nextImage();
+      }
+    };
+    
+    if (lightboxOpen) {
+      window.addEventListener('touchstart', handleTouchStart);
+      window.addEventListener('touchend', handleTouchEnd);
+    }
+    
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [lightboxOpen, nextImage, prevImage, isFirstImage, isLastImage]);
+  
+  // Preload adjacent images for smoother navigation
+  useEffect(() => {
+    if (lightboxOpen && images.length > 1) {
+      // Preload next image if it exists
+      if (currentImageIndex < images.length - 1) {
+        const nextImg = images[currentImageIndex + 1];
+        const img = new Image();
+        img.src = optimizeCloudinaryUrl(nextImg.src, {
+          width: 1600,
+          height: 900,
+          quality: 'auto'
+        });
+      }
+      
+      // Preload previous image if it exists
+      if (currentImageIndex > 0) {
+        const prevImg = images[currentImageIndex - 1];
+        const img = new Image();
+        img.src = optimizeCloudinaryUrl(prevImg.src, {
+          width: 1600,
+          height: 900,
+          quality: 'auto'
+        });
+      }
+    }
+  }, [currentImageIndex, images, lightboxOpen]);
   
   return (
     <div className="fixed inset-0 bg-white z-50 flex items-center justify-center">
@@ -40,21 +145,37 @@ const Lightbox: React.FC<LightboxProps> = ({
       
       {/* Image counter removed per client request */}
       
-      <div className="flex items-center justify-center h-screen w-full">
+      <div className="flex items-center justify-center h-screen w-full relative">
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-16 h-16 border-4 border-gray-200 border-t-black rounded-full animate-spin"></div>
+          </div>
+        )}
         <img
-          // Using Cloudinary's intelligent cropping with auto-gravity
-          src={currentImage.src.replace(
-            /\/upload\/.*?\/v(\d+)\//,
-            '/upload/c_fill,g_auto:faces,w_1600,h_900,dpr_auto,f_auto,q_auto/v$1/'
-          )}
+          src={optimizeCloudinaryUrl(currentImage.src, {
+            crop: 'fill',
+            gravity: 'auto:faces',
+            width: 1600,
+            height: 900,
+            dpr: 'auto',
+            format: 'auto',
+            quality: 'auto'
+          })}
           alt={currentImage.alt}
-          className="lightbox-image"
+          className={`lightbox-image transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
           style={{
             width: '100vw',
             height: '100vh',
             objectFit: 'cover', /* Better for full viewport display */
             maxWidth: 'none',
             maxHeight: 'none'
+          }}
+          onLoad={() => setIsLoading(false)}
+          onError={(e) => {
+            console.error('Image failed to load:', currentImage.src);
+            // Fall back to original image if optimized version fails
+            (e.target as HTMLImageElement).src = currentImage.src;
+            setIsLoading(false);
           }}
         />
       </div>
