@@ -45,14 +45,14 @@ const Lightbox: React.FC<LightboxProps> = ({
           // Using Cloudinary's intelligent cropping with auto-gravity
           src={currentImage.src.replace(
             /\/upload\/.*?\/v(\d+)\//,
-            '/upload/c_pad,g_auto:faces,w_auto,dpr_auto,f_auto,q_auto/v$1/'
+            '/upload/c_fill,g_auto:faces,w_1600,h_900,dpr_auto,f_auto,q_auto/v$1/'
           )}
           alt={currentImage.alt}
           className="lightbox-image"
           style={{
             width: '100vw',
             height: '100vh',
-            objectFit: 'cover', /* Using cover to fill the viewport */
+            objectFit: 'cover', /* Better for full viewport display */
             maxWidth: 'none',
             maxHeight: 'none'
           }}
