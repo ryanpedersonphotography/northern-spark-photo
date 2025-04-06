@@ -52,7 +52,9 @@ const Lightbox: React.FC<LightboxProps> = ({
           style={{
             width: '100vw',
             height: '100vh',
-            objectFit: 'cover'
+            objectFit: 'contain', /* Changed to 'contain' to avoid double-cropping */
+            maxWidth: 'none',
+            maxHeight: 'none'
           }}
         />
       </div>
