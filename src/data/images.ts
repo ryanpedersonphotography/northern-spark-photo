@@ -52,5 +52,23 @@ export const images: ImageCategory = {
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743651365/nature/7Y5A0753.jpg", alt: "Snow-covered landscape with trees under a winter sky.", orientation: "landscape" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743651364/nature/7Y5A0668.jpg", alt: "Forest path covered in colorful autumn leaves.", orientation: "landscape" },
     { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743651341/nature/3E3A1828.jpg", alt: "Desert landscape with sand dunes under a clear sky.", orientation: "landscape" }
+  ],
+  family: [
+    // Family images using the same URL pattern as other categories
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743791217/families/-Kp8_bODRd2hTRlQgXQjjg.avif", alt: "Family portrait in outdoor woodland setting", orientation: "landscape" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743791216/families/1CvB_yMhTWGQk7uTZRSFNQ.avif", alt: "Family photo with parents and two children", orientation: "landscape" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743791214/families/460962500_8924869537526337_2529396259360654145_n.avif", alt: "Candid family moment outdoors", orientation: "landscape" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743791213/families/461159343_8940489162631041_3104956276245805809_n.avif", alt: "Smiling family portrait outdoors", orientation: "landscape" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743791210/families/461237372_8940489132631044_4476979802288483586_n.avif", alt: "Family portrait with natural background", orientation: "landscape" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743791208/families/461237575_8940489579297666_361445881444474309_n.avif", alt: "Family portrait in autumn setting", orientation: "landscape" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743791204/families/461270518_8940489565964334_7581580201913562661_n.avif", alt: "Candid family moment in outdoor setting", orientation: "landscape" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743791195/families/461322819_8940489895964301_1852738555745267231_n.avif", alt: "Family with children in natural setting", orientation: "landscape" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743791194/families/461362299_8940489569297667_5083766929577629329_n.avif", alt: "Multi-generational family portrait", orientation: "landscape" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743791189/families/7Y5A1194.avif", alt: "Professional family portrait outdoors", orientation: "portrait" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743791184/families/F1jUPOb4QQiQvYYn86wKGA.avif", alt: "Family portrait with autumn colors", orientation: "landscape" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743791181/families/HJKz0aNjTriiOKasjX3PrQ.avif", alt: "Family portrait with artistic composition", orientation: "landscape" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743791173/families/le5Uu3BTS1qbNQCGkkuSqA.avif", alt: "Intimate family moment captured", orientation: "landscape" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743791170/families/MyGTVtIdSfiSQncs9CQqoA.avif", alt: "Outdoor family portrait with natural composition", orientation: "landscape" },
+    { src: "https://res.cloudinary.com/dtszzijrd/image/upload/f_auto,q_auto/v1743791155/families/zRwV9LAOTAuxqQqOlwPnPA.avif", alt: "Family portrait with artistic framing", orientation: "landscape" }
   ]
 };
