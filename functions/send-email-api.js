@@ -1,9 +1,9 @@
 // functions/send-email-api.js
 // This is an alternative implementation using Brevo's API instead of SMTP
 
-const https = require('https');
+import https from 'https';
 
-exports.handler = async function(event, context) {
+export const handler = async (event, context) => {
   console.log(`\n--- Function Invoked ---`);
   console.log(`Timestamp: ${new Date().toISOString()}`);
   console.log(`Request Method: ${event.httpMethod}`);
