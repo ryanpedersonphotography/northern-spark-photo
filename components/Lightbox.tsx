@@ -135,20 +135,24 @@ const Lightbox: React.FC<LightboxProps> = ({
   }, [currentImageIndex, images, lightboxOpen]);
   
   return (
-    <div className="fixed inset-0 bg-white z-50 flex items-center justify-center">
+    <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
       <button 
-        className="absolute top-5 right-5 text-black text-2xl bg-transparent border-none cursor-pointer z-50 opacity-60 hover:opacity-100"
+        className="absolute top-5 right-5 text-white text-4xl bg-black bg-opacity-50 rounded-full w-12 h-12 flex items-center justify-center border border-white cursor-pointer z-50 hover:bg-opacity-70 shadow-lg"
         onClick={closeLightbox}
+        aria-label="Close lightbox"
       >
         ×
       </button>
       
-      {/* Image counter removed per client request */}
+      {/* Image counter - can be added back if desired */}
+      <div className="absolute top-5 left-5 text-white bg-black bg-opacity-50 px-3 py-1 rounded-full text-sm z-40">
+        {currentImageIndex + 1} / {images.length}
+      </div>
       
       <div className="flex items-center justify-center h-screen w-full relative">
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-16 h-16 border-4 border-gray-200 border-t-black rounded-full animate-spin"></div>
+          <div className="absolute inset-0 flex items-center justify-center z-30">
+            <div className="w-20 h-20 border-4 border-gray-400 border-t-white rounded-full animate-spin shadow-lg"></div>
           </div>
         )}
         <img
@@ -180,12 +184,12 @@ const Lightbox: React.FC<LightboxProps> = ({
         />
       </div>
       
-      {/* Alt text is still used for accessibility in the img tag, but not displayed visually here */}
-      
+      {/* Navigation buttons with improved visibility */}
       {!isFirstImage && (
         <button 
-          className="fixed left-0 top-1/2 transform -translate-y-1/2 bg-transparent border-none cursor-pointer text-2xl text-black p-5 opacity-60 hover:opacity-100"
+          className="fixed left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white text-3xl rounded-full w-12 h-12 flex items-center justify-center border border-white cursor-pointer shadow-lg"
           onClick={prevImage}
+          aria-label="Previous image"
         >
           ←
         </button>
@@ -193,8 +197,9 @@ const Lightbox: React.FC<LightboxProps> = ({
       
       {!isLastImage && (
         <button 
-          className="fixed right-0 top-1/2 transform -translate-y-1/2 bg-transparent border-none cursor-pointer text-2xl text-black p-5 opacity-60 hover:opacity-100"
+          className="fixed right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white text-3xl rounded-full w-12 h-12 flex items-center justify-center border border-white cursor-pointer shadow-lg"
           onClick={nextImage}
+          aria-label="Next image"
         >
           →
         </button>
