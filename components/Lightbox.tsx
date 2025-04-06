@@ -42,13 +42,17 @@ const Lightbox: React.FC<LightboxProps> = ({
       
       <div className="flex items-center justify-center h-screen w-full">
         <img
-          // Enhanced quality for lightbox view with responsive sizing
-          src={currentImage.src.replace('/upload/f_auto,q_auto', '/upload/c_fit,w_auto,dpr_auto,f_auto,q_auto')}
+          // Using Cloudinary's intelligent cropping with auto-gravity
+          src={currentImage.src.replace(
+            /\/upload\/.*?\/v(\d+)\//,
+            '/upload/c_fill,g_auto,w_auto,dpr_auto,f_auto,q_auto/v$1/'
+          )}
           alt={currentImage.alt}
+          className="lightbox-image"
           style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'contain'
+            width: '100vw',
+            height: '100vh',
+            objectFit: 'cover'
           }}
         />
       </div>
