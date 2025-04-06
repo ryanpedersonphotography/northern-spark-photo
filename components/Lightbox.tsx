@@ -42,8 +42,8 @@ const Lightbox: React.FC<LightboxProps> = ({
       
       <div className="flex items-center justify-center h-screen w-full">
         <img
-          // Enhanced quality for lightbox view to showcase HDR images
-          src={currentImage.src.replace('/upload/f_auto,q_auto', '/upload/f_auto,q_auto:best,w_1600')}
+          // Enhanced quality for lightbox view with responsive sizing
+          src={currentImage.src.replace('/upload/f_auto,q_auto', '/upload/c_fit,w_auto,dpr_auto,f_auto,q_auto')}
           alt={currentImage.alt}
           style={{
             width: '100%',
