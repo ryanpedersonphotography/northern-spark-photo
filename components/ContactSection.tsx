@@ -27,12 +27,21 @@ const ContactSection: React.FC = () => {
         setFormStatus({ type: 'success', message: 'Thank you! Your message has been sent.' });
         event.currentTarget.reset(); // Clear form
       } else {
-        // Use error message from function if available, otherwise generic
-        setFormStatus({ type: 'error', message: result.message || 'Sorry, there was an error sending your message. Please try again.' });
+        // Use detailed error message from function if available
+        const errorMessage = result.errorDetail
+          ? `Error: ${result.errorDetail}`
+          : result.message || 'Sorry, there was an error sending your message. Please try again.';
+        setFormStatus({ type: 'error', message: errorMessage });
+        console.error("Server Error Response:", result); // Log the full error response from the function
       }
-    } catch (error) {
-      console.error('Form submission error:', error);
-      setFormStatus({ type: 'error', message: 'Sorry, there was an error sending your message. Please try again.' });
+    } catch (error: any) { // Catch network or other errors
+      console.error('Form submission fetch/network error:', error);
+      // Try to provide a more specific message if possible
+      let clientErrorMessage = 'Sorry, there was an error sending your message. Please check your connection and try again.';
+      if (error instanceof Error) {
+          clientErrorMessage = `Network Error: ${error.message}. Please check your connection.`;
+      }
+      setFormStatus({ type: 'error', message: clientErrorMessage });
     } finally {
       setIsSubmitting(false);
     }
