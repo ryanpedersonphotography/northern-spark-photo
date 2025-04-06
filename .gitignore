@@ -29,3 +29,10 @@ src/assets/images/
 # Temporary files (if not needed in repo)
 # *.json # Re-evaluate if other JSON files need committing
 # *.txt # Removed to allow robots.txt
+
+# Deployment related
+.netlify/
+
+# Temporary files
+temp/
+~/
