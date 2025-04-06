@@ -38,9 +38,7 @@ const Lightbox: React.FC<LightboxProps> = ({
         ×
       </button>
       
-      <div className="absolute top-5 left-5 text-black text-sm opacity-60">
-        {currentImageIndex + 1} / {images.length}
-      </div>
+      {/* Image counter removed per client request */}
       
       <div className="flex items-center justify-center h-screen w-full">
         <img
