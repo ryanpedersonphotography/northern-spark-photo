@@ -1,7 +1,6 @@
 [build]
   command = "npm run build:prod"
   publish = "dist"
-  functions = "functions" # Specify the functions directory
 
 # Handle SPA redirects
 [[redirects]]
