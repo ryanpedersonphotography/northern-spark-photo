@@ -1,51 +1,14 @@
 import React, { useState } from 'react';
 
 const ContactSection: React.FC = () => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formStatus, setFormStatus] = useState<{ type: 'idle' | 'success' | 'error'; message: string }>({ type: 'idle', message: '' });
+  // State for submission status can be simplified or removed if not needed for UI feedback
+  // const [isSubmitting, setIsSubmitting] = useState(false);
+  // const [formStatus, setFormStatus] = useState<{ type: 'idle' | 'success' | 'error'; message: string }>({ type: 'idle', message: '' });
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setIsSubmitting(true);
-    setFormStatus({ type: 'idle', message: '' }); // Reset status
-
-    const formData = new FormData(event.currentTarget);
-    const data = Object.fromEntries(formData.entries());
-
-    try {
-      const response = await fetch('/.netlify/functions/send-email-api', {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      const result = await response.json();
-
-      if (response.ok && result.success) {
-        setFormStatus({ type: 'success', message: 'Thank you! Your message has been sent.' });
-        event.currentTarget.reset(); // Clear form
-      } else {
-        // Use detailed error message from function if available
-        const errorMessage = result.errorDetail
-          ? `Error: ${result.errorDetail}`
-          : result.message || 'Sorry, there was an error sending your message. Please try again.';
-        setFormStatus({ type: 'error', message: errorMessage });
-        console.error("Server Error Response:", result); // Log the full error response from the function
-      }
-    } catch (error: any) { // Catch network or other errors
-      console.error('Form submission fetch/network error:', error);
-      // Try to provide a more specific message if possible
-      let clientErrorMessage = 'Sorry, there was an error sending your message. Please check your connection and try again.';
-      if (error instanceof Error) {
-          clientErrorMessage = `Network Error: ${error.message}. Please check your connection.`;
-      }
-      setFormStatus({ type: 'error', message: clientErrorMessage });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  // Netlify handles submission, so custom handleSubmit is not needed unless doing AJAX submission
+  // If using standard HTML form submission, this function can be removed.
+  // If using AJAX with Netlify, the fetch logic needs to be adapted.
+  // For simplicity, we'll rely on standard HTML form submission for now.
 
   return (
     <div className="bg-white p-8 rounded shadow-sm">
@@ -62,8 +25,24 @@ const ContactSection: React.FC = () => {
       {/* Removed Services List */}
 
       <h3 className="text-xl font-light mb-4">Send a Message</h3>
-      {/* Use the new handleSubmit function */}
-      <form onSubmit={handleSubmit} className="grid gap-4 max-w-md">
+      {/* Configure form for Netlify */}
+      <form
+        name="contact" // Name used by Netlify to identify the form
+        method="POST"
+        data-netlify="true"
+        data-netlify-honeypot="bot-field" // Honeypot field name
+        className="grid gap-4 max-w-md"
+        // onSubmit={handleSubmit} // Remove if using standard HTML submission
+      >
+        {/* Netlify requires this hidden field for standard HTML forms */}
+        <input type="hidden" name="form-name" value="contact" />
+        {/* Honeypot field (should be hidden with CSS or visually hidden) */}
+        <p className="hidden">
+          <label>
+            Don’t fill this out if you’re human: <input name="bot-field" />
+          </label>
+        </p>
+
         {/* Name Input */}
         <label htmlFor="name" className="sr-only">Name</label>
         <input
@@ -73,7 +52,7 @@ const ContactSection: React.FC = () => {
           placeholder="Your Name"
           className="p-3 border border-gray-300"
           required
-          disabled={isSubmitting}
+          // disabled={isSubmitting} // Remove if not using JS submission state
         />
 
         {/* Email Input */}
@@ -85,7 +64,7 @@ const ContactSection: React.FC = () => {
           placeholder="Your Email"
           className="p-3 border border-gray-300"
           required
-          disabled={isSubmitting}
+          // disabled={isSubmitting} // Remove if not using JS submission state
         />
 
         {/* Subject Input (Added based on user's HTML) */}
@@ -97,7 +76,7 @@ const ContactSection: React.FC = () => {
           placeholder="Subject"
           className="p-3 border border-gray-300"
           required // Make subject required as per user's HTML
-          disabled={isSubmitting}
+          // disabled={isSubmitting} // Remove if not using JS submission state
         />
 
         {/* Phone Input */}
@@ -108,7 +87,7 @@ const ContactSection: React.FC = () => {
           name="phone" // Ensure name attribute exists if needed by function (optional field)
           placeholder="Your Phone (Optional)"
           className="p-3 border border-gray-300"
-          disabled={isSubmitting}
+          // disabled={isSubmitting} // Remove if not using JS submission state
         />
 
         {/* Message Textarea */}
@@ -120,25 +99,27 @@ const ContactSection: React.FC = () => {
           rows={5}
           className="p-3 border border-gray-300"
           required
-          disabled={isSubmitting}
+          // disabled={isSubmitting} // Remove if not using JS submission state
         ></textarea>
 
         {/* Submit Button */}
         <button
           type="submit"
-          disabled={isSubmitting} // Disable button while submitting
+          // disabled={isSubmitting} // Remove if not using JS submission state
           className="p-3 bg-gray-800 text-white cursor-pointer hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isSubmitting ? 'Sending...' : 'Send Message'}
+          {/* {isSubmitting ? 'Sending...' : 'Send Message'} */}
+          Send Message {/* Simplified button text */}
         </button>
 
-        {/* Display form status message */}
-        {formStatus.type === 'success' && (
+        {/* Display form status message - Netlify handles success/error pages by default */}
+        {/* You can customize this with AJAX submission if needed */}
+        {/* {formStatus.type === 'success' && (
              <p className="text-green-600 mt-2 text-center">{formStatus.message}</p>
         )}
         {formStatus.type === 'error' && (
              <p className="text-red-600 mt-2 text-center">{formStatus.message}</p>
-        )}
+        )} */}
       </form>
     </div>
   );
