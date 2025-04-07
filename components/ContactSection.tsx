@@ -1,16 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react'; // Import useState
 import { useForm, ValidationError } from '@formspree/react';
 
 const ContactSection: React.FC = () => {
   // Use the useForm hook, passing your Formspree form ID
-  const [state, handleSubmit] = useForm("xwplwekq");
+  const [state, originalHandleSubmit] = useForm("xwplwekq"); // Rename original handleSubmit
 
-  // If the form was submitted successfully, show the thank you message
+  // State to store submitted data
+  const [submittedName, setSubmittedName] = useState('');
+  const [submittedEmail, setSubmittedEmail] = useState('');
+  const [submittedMessage, setSubmittedMessage] = useState('');
+
+  // Wrapper function to capture data before submitting
+  const handleFormSubmitWrapper = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); // Prevent default form submission
+    const formData = new FormData(event.currentTarget);
+    setSubmittedName(formData.get('name') as string || '');
+    setSubmittedEmail(formData.get('email') as string || '');
+    setSubmittedMessage(formData.get('message') as string || '');
+
+    // Call the original Formspree submit handler
+    originalHandleSubmit(event);
+  };
+
+
+  // If the form was submitted successfully, show the personalized thank you message
   if (state.succeeded) {
       return (
           <div className="bg-white p-8 rounded shadow-sm text-center">
-              <h3 className="text-xl font-light mb-4">Thank You!</h3>
-              <p className="text-green-600">Your message has been sent successfully. We will contact you shortly about your photography session.</p>
+              {/* Personalized heading */}
+              <h3 className="text-xl font-light mb-4">Thank You{submittedName ? `, ${submittedName}` : ''}!</h3>
+              <p className="text-green-600 mb-4">Your message has been sent successfully. We will contact you shortly about your photography session.</p>
+              {/* Display submitted details */}
+              <div className="text-left max-w-md mx-auto border-t pt-4 mt-4">
+                <p><strong>Name:</strong> {submittedName}</p>
+                <p><strong>Email:</strong> {submittedEmail}</p>
+                <p><strong>Message:</strong></p>
+                <p className="whitespace-pre-wrap">{submittedMessage}</p>
+              </div>
           </div>
       );
   }
@@ -31,8 +57,8 @@ const ContactSection: React.FC = () => {
       {/* Removed Services List */}
 
       <h3 className="text-xl font-light mb-4">Send a Message</h3>
-      {/* Use the handleSubmit function from the useForm hook */}
-      <form onSubmit={handleSubmit} className="grid gap-4 max-w-md">
+      {/* Use the wrapper function for onSubmit */}
+      <form onSubmit={handleFormSubmitWrapper} className="grid gap-4 max-w-md">
         {/* Name Input */}
         <label htmlFor="name" className="sr-only">Name</label>
         <input
