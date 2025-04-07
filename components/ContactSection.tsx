@@ -1,21 +1,49 @@
-import React from 'react';
-import { useForm, ValidationError } from '@formspree/react';
+import React, { useState } from 'react';
 
 const ContactSection: React.FC = () => {
-  // Use the useForm hook, passing your Formspree form ID
-  const [state, handleSubmit] = useForm("xwplwekq");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
-  // If the form was submitted successfully, show the thank you message
-  if (state.succeeded) {
-      return (
-          <div className="bg-white p-8 rounded shadow-sm text-center">
-              <h3 className="text-xl font-light mb-4">Thank You!</h3>
-              <p className="text-green-600">Your message has been sent successfully. We will contact you shortly about your photography session.</p>
-          </div>
-      );
-  }
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSubmitting(true);
+    setSubmissionStatus('idle'); // Reset status on new submission attempt
+    const formData = new FormData(event.currentTarget);
 
-  // Otherwise, render the form
+    try {
+      const response = await fetch('https://formspree.io/f/xwplwekq', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json' // Important for AJAX submission to Formspree
+        }
+      });
+
+      if (response.ok) {
+        setSubmissionStatus('success');
+        event.currentTarget.reset(); // Clear form fields on success
+      } else {
+        // Log potential error details from Formspree if available
+        response.json().then(data => {
+          if (data && data.errors) {
+            console.error("Formspree errors:", data.errors);
+          } else {
+            console.error("Formspree submission failed with status:", response.status);
+          }
+        }).catch(() => {
+          console.error("Formspree submission failed, non-JSON response:", response.status);
+        });
+        setSubmissionStatus('error');
+      }
+    } catch (error) {
+      console.error('Network error during form submission:', error);
+      setSubmissionStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+
   return (
     <div className="bg-white p-8 rounded shadow-sm">
       <h1 className="text-3xl font-light mb-4">Contact Northern Spark Photography</h1>
@@ -31,91 +59,27 @@ const ContactSection: React.FC = () => {
       {/* Removed Services List */}
 
       <h3 className="text-xl font-light mb-4">Send a Message</h3>
-      {/* Use the handleSubmit function from the useForm hook */}
+      {/* Updated form tag to use onSubmit handler */}
       <form onSubmit={handleSubmit} className="grid gap-4 max-w-md">
-        {/* Name Input */}
-        <label htmlFor="name" className="sr-only">Name</label>
-        <input
-          id="name"
-          type="text"
-          name="name"
-          placeholder="Your Name"
-          className="p-3 border border-gray-300"
-          required
-          disabled={state.submitting}
-        />
-        <ValidationError
-          prefix="Name"
-          field="name"
-          errors={state.errors}
-          className="text-red-600 text-sm -mt-3" // Basic styling for errors
-        />
-
-        {/* Email Input */}
-        <label htmlFor="email" className="sr-only">Email Address</label>
-        <input
-          id="email"
-          type="email"
-          name="email"
-          placeholder="Your Email"
-          className="p-3 border border-gray-300"
-          required
-          disabled={state.submitting}
-        />
-        <ValidationError
-          prefix="Email"
-          field="email"
-          errors={state.errors}
-          className="text-red-600 text-sm -mt-3"
-        />
-
-        {/* Phone Input */}
-        <label htmlFor="phone" className="sr-only">Phone Number</label>
-        <input
-          id="phone"
-          type="tel"
-          name="phone"
-          placeholder="Your Phone"
-          className="p-3 border border-gray-300"
-          disabled={state.submitting}
-        />
-         <ValidationError
-          prefix="Phone"
-          field="phone"
-          errors={state.errors}
-          className="text-red-600 text-sm -mt-3"
-        />
-
-        {/* Message Textarea */}
-        <label htmlFor="message" className="sr-only">Message</label>
-        <textarea
-          id="message"
-          name="message"
-          placeholder="Your Message (Tell us about your senior!)"
-          rows={5}
-          className="p-3 border border-gray-300"
-          required
-          disabled={state.submitting}
-        ></textarea>
-        <ValidationError
-          prefix="Message"
-          field="message"
-          errors={state.errors}
-          className="text-red-600 text-sm -mt-3"
-        />
-
-        {/* Submit Button */}
+        <input type="text" name="name" placeholder="Your Name" className="p-3 border border-gray-300" required disabled={isSubmitting} />
+        <input type="email" name="email" placeholder="Your Email" className="p-3 border border-gray-300" required disabled={isSubmitting} />
+        <input type="tel" name="phone" placeholder="Your Phone" className="p-3 border border-gray-300" disabled={isSubmitting} />
+        {/* Removed Service Select Dropdown */}
+        <textarea name="message" placeholder="Your Message (Tell us about your senior!)" rows={5} className="p-3 border border-gray-300" required disabled={isSubmitting}></textarea>
+        {/* Updated button to show status and disable during submission */}
         <button
           type="submit"
-          disabled={state.submitting} // Disable button while submitting
+          disabled={isSubmitting}
           className="p-3 bg-gray-800 text-white cursor-pointer hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {state.submitting ? 'Sending...' : 'Send Message'}
+          {isSubmitting ? 'Sending...' : 'Send Message'}
         </button>
-
-        {/* Display general errors if they exist */}
-        {state.errors && (
-             <p className="text-red-600 mt-2 text-center">Something went wrong. Please check your input or try again later.</p>
+         {/* Conditional success/error messages */}
+         {submissionStatus === 'success' && (
+          <p className="text-green-600 mt-2 text-center">Thank you for your message! We will contact you shortly about your photography session.</p>
+        )}
+        {submissionStatus === 'error' && (
+          <p className="text-red-600 mt-2 text-center">Something went wrong. Please try again later or contact us directly via phone or email.</p>
         )}
       </form>
     </div>
