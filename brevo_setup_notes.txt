@@ -1,0 +1,46 @@
+# Brevo Contact Form Setup Notes (April 6, 2025)
+
+## Overview
+This document outlines the setup implemented to send contact form submissions via a Netlify serverless function using the Brevo (formerly Sendinblue) API. This setup is currently reported as not working.
+
+## Implementation Details
+
+1.  **Serverless Function (`functions/send-email-api.js`):**
+    *   A Node.js function was created to handle POST requests.
+    *   It parses form data (name, email, subject, phone, message) from the request body.
+    *   It uses the `@sendinblue/client` SDK to interact with the Brevo Transactional Email API (v3).
+    *   It constructs an email with the form data.
+    *   **Sender:** `noreply@northernspark.co` (Requires domain authentication in Brevo)
+    *   **Recipient:** `northernsparkstudio@gmail.com`
+    *   **Reply-To:** `northernsparkstudio@gmail.com`
+    *   It relies on the `BREVO_API_KEY` environment variable for authentication.
+    *   Returns a JSON response indicating success or failure.
+
+2.  **Frontend Component (`components/ContactSection.tsx`):**
+    *   The React component's form was modified to remove Netlify's default form handling attributes (`data-netlify`, `data-netlify-honeypot`, hidden `form-name` input).
+    *   An `onSubmit` handler (`handleSubmit`) was added.
+    *   This handler prevents the default form submission.
+    *   It uses the `fetch` API to send a POST request with the form data (as JSON) to the `/.netlify/functions/send-email-api` endpoint.
+    *   State variables (`isSubmitting`, `formStatus`) were added to manage the UI during submission (e.g., disabling fields, showing "Sending...", displaying success/error messages).
+
+3.  **Dependencies:**
+    *   The `@sendinblue/client` npm package was installed.
+
+4.  **Environment Variables (Netlify):**
+    *   An environment variable `BREVO_API_KEY` was set via the Netlify CLI with the provided Brevo V3 API key.
+
+5.  **Deployment:**
+    *   The code changes were committed and pushed to the `main` branch.
+    *   A production deployment was triggered via the Netlify CLI.
+
+## Potential Reasons for Failure
+
+1.  **Domain Not Authenticated:** The most likely reason. Sending emails from `noreply@northernspark.co` via Brevo requires the `northernspark.co` domain to be successfully authenticated in Brevo (Steps 1-5 of the guide, involving adding DNS records). If this wasn't completed, Brevo might reject the emails, or they might go straight to spam.
+2.  **API Key Issue:** Although set, there could be an issue with the API key itself (e.g., incorrect key, permissions issue within Brevo).
+3.  **Serverless Function Error:** There might be an uncaught error within the `send-email-api.js` function. Checking the Netlify function logs (link provided in the deployment output) would reveal specific errors.
+4.  **Incorrect Endpoint Call:** The frontend might not be calling the `/.netlify/functions/send-email-api` endpoint correctly, although the code seems standard. Browser developer tools (Network tab) could show if the request is being made and what the response is.
+5.  **Brevo Service Issue:** Less likely, but there could be a temporary issue with the Brevo API service.
+6.  **Deployment Issue:** Although the deploy reported success, there might have been an issue deploying the function correctly.
+
+## Next Steps (User Request)
+Revert the contact form functionality to a previous working state using Formspree, including the success message display. Discard the Brevo-related changes (`functions/send-email-api.js`, component modifications, package installation).
