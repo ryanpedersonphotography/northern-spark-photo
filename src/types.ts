@@ -1,5 +1,5 @@
 export interface Image {
-  src: string;
+  publicId: string; // Changed from src to publicId
   alt: string;
   orientation: string;
 }

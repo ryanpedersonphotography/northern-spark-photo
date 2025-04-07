@@ -1,10 +1,19 @@
 import React from 'react';
+import cld from '../src/utils/cloudinary-instance'; // Corrected import path
+import { fill } from "@cloudinary/url-gen/actions/resize";
+import { quality } from "@cloudinary/url-gen/actions/delivery";
+import { format } from "@cloudinary/url-gen/actions/delivery";
+import { autoGravity } from "@cloudinary/url-gen/qualifiers/gravity"; // If needed for fill
 
-interface Image {
-  src: string;
-  alt: string;
-  orientation: string;
-}
+import { Image } from '../src/types'; // Corrected import path for types
+
+// Remove old interface definition
+// interface Image {
+//   src: string;
+//   alt: string;
+//   orientation: string;
+// }
+// Removed stray closing brace
 
 interface ImageGridProps {
   images: Image[];
@@ -37,10 +46,20 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
     }
   };
 
+  // Removed getPublicIdFromUrl helper function
+
   return (
     <div style={getGridStyle()}>
-      {images.map((image, index) => (
-        <div 
+      {images.map((image, index) => {
+        // Use image.publicId directly
+        const imageUrl = cld.image(image.publicId)
+            .resize(fill().width(1200).gravity(autoGravity())) // Use fill crop, specify width, auto-gravity
+            .delivery(quality('auto:best')) // Set quality
+            .delivery(format('auto')) // Set format
+            .toURL();
+        // No need for fallback or warning if publicId is guaranteed by the data structure
+        return (
+          <div
           key={index} 
           style={{
             overflow: 'hidden',
@@ -54,8 +73,8 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
           onClick={() => openLightbox(index)}
         >
           <img
-            // Use w_1200 and q_auto:best for grid thumbnails to enhance HDR quality with reasonable performance
-            src={image.src.replace('/upload/f_auto,q_auto', '/upload/f_auto,q_auto:best,w_1200')}
+            // Use the generated SDK URL
+            src={imageUrl}
             alt={image.alt}
             style={{
               width: '100%',
@@ -69,10 +88,11 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
             onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
             // Eager load the first few images (likely above the fold), lazy load the rest
             loading={index < 3 ? "eager" : "lazy"}
-            fetchPriority={index < 3 ? "high" : "auto"}
+            // Removed fetchPriority due to conflicting warnings/types
           />
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 };
