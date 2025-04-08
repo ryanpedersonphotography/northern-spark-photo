@@ -268,7 +268,7 @@ const Lightbox: React.FC<LightboxProps> = ({
           style={{
             width: '100vw',
             height: '100vh',
-            objectFit: 'contain',
+            objectFit: 'cover', // Changed from 'contain' to 'cover'
             opacity: isLoading ? 0 : 1,
             transition: 'opacity 0.5s ease'
           }}
