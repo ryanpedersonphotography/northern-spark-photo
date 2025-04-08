@@ -63,10 +63,8 @@ export const generateRawImageUrl = (publicId: string): string => {
     return '';
   }
   
-  // Apply only automatic format and quality
+  // Return the base URL with no transformations applied
   return cld.image(publicId)
-    .delivery(format('auto')) // f_auto
-    .delivery(quality('auto')) // q_auto
     .toURL();
 };
 
