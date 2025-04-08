@@ -1,19 +1,28 @@
+// Import React and necessary hooks/components
 import React, { useEffect, useState, useRef } from 'react';
-import generateImageUrl, { 
-  generatePlaceholderUrl, 
-  ImageQuality 
+// Import Cloudinary utility functions and types
+import generateImageUrl, {
+  generatePlaceholderUrl,
+  ImageQuality
 } from '../utils/cloudinary';
-import type { Image } from '../interfaces/Image'; // Use type-only import
+// Import the Image type definition using type-only import to avoid naming conflicts
+import type { Image } from '../interfaces/Image';
 
+// Define the props expected by the Lightbox component
 interface LightboxProps {
-  images: Image[];
-  currentImageIndex: number;
-  lightboxOpen: boolean;
-  closeLightbox: () => void;
-  nextImage: () => void;
-  prevImage: () => void;
+  images: Image[]; // Array of image objects available for the lightbox
+  currentImageIndex: number; // Index of the currently displayed image in the 'images' array
+  lightboxOpen: boolean; // Boolean indicating if the lightbox is currently visible
+  closeLightbox: () => void; // Function to close the lightbox
+  nextImage: () => void; // Function to navigate to the next image
+  prevImage: () => void; // Function to navigate to the previous image
 }
 
+/**
+ * Lightbox Component
+ * Displays a full-screen view of an image with navigation controls (prev/next/close).
+ * Handles keyboard and touch navigation, preloads adjacent images, and shows placeholders.
+ */
 const Lightbox: React.FC<LightboxProps> = ({
   images,
   currentImageIndex,
@@ -22,192 +31,210 @@ const Lightbox: React.FC<LightboxProps> = ({
   nextImage,
   prevImage
 }) => {
-  // State for tracking image loading
+  // State to track if the main high-quality image is still loading
   const [isLoading, setIsLoading] = useState(true);
+  // State to control the visibility of the blurred placeholder image
   const [showPlaceholder, setShowPlaceholder] = useState(true);
-  
-  // Refs for preloaded images
+
+  // Ref to store preloaded HTMLImageElement objects for adjacent images
   const preloadedImages = useRef<Record<number, HTMLImageElement>>({});
+  // Ref to store AbortController instances for ongoing preload requests
   const preloadAbortControllers = useRef<Record<number, AbortController>>({});
 
-  // Hooks are called unconditionally above
+  // --- Hooks --- (Called unconditionally at the top)
 
-  // Reset loading state when image changes
+  // Effect to reset loading states whenever the currentImageIndex changes
   useEffect(() => {
-    setIsLoading(true);
-    setShowPlaceholder(true);
-  }, [currentImageIndex]);
+    setIsLoading(true); // Assume the new image is loading
+    setShowPlaceholder(true); // Show the placeholder initially
+  }, [currentImageIndex]); // Dependency: run only when the index changes
 
-  // Handle keyboard navigation
+  // Effect to handle keyboard navigation (ArrowLeft, ArrowRight, Escape)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!lightboxOpen || !images || images.length === 0) return; // Check images validity here too
-      
-      // Recalculate inside hook based on props
+      // Ignore if lightbox isn't open or images aren't available
+      if (!lightboxOpen || !images || images.length === 0) return;
+
+      // Determine if we are at the first or last image within the hook's scope
       const first = currentImageIndex === 0;
       const last = currentImageIndex === images.length - 1;
 
+      // Handle key presses
       switch (e.key) {
         case 'ArrowLeft':
-          if (!first) prevImage();
+          if (!first) prevImage(); // Go to previous if not the first image
           break;
         case 'ArrowRight':
-          if (!last) nextImage();
+          if (!last) nextImage(); // Go to next if not the last image
           break;
         case 'Escape':
-          closeLightbox();
+          closeLightbox(); // Close lightbox on Escape key
           break;
         default:
-          break;
+          break; // Ignore other keys
       }
     };
 
+    // Add event listener when the component mounts or dependencies change
     window.addEventListener('keydown', handleKeyDown);
 
-    // Cleanup
+    // Cleanup function: remove event listener when component unmounts or dependencies change
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [lightboxOpen, nextImage, prevImage, closeLightbox, currentImageIndex, images]); // Depend on index/images
+    // Dependencies: re-run effect if any of these change
+  }, [lightboxOpen, nextImage, prevImage, closeLightbox, currentImageIndex, images]);
 
-  // Handle touch navigation
+  // Effect to handle touch swipe navigation (left/right swipes)
   useEffect(() => {
     let touchStartX = 0;
     let touchEndX = 0;
 
+    // Record the starting X position of the touch
     const handleTouchStart = (e: TouchEvent) => {
       touchStartX = e.changedTouches[0].screenX;
     };
 
+    // Record the ending X position and trigger swipe logic
     const handleTouchEnd = (e: TouchEvent) => {
       touchEndX = e.changedTouches[0].screenX;
       handleSwipe();
     };
 
+    // Determine swipe direction and trigger navigation if distance threshold is met
     const handleSwipe = () => {
-      if (!images || images.length === 0) return; // Check images validity
+      // Ignore if images aren't available
+      if (!images || images.length === 0) return;
 
-      // Recalculate inside hook based on props
+      // Determine if we are at the first or last image
       const first = currentImageIndex === 0;
       const last = currentImageIndex === images.length - 1;
-      
-      // Minimum swipe distance (in px)
-      const minSwipeDistance = 50;
-      const distance = touchEndX - touchStartX;
 
+      const minSwipeDistance = 50; // Minimum pixels to be considered a swipe
+      const distance = touchEndX - touchStartX; // Positive for right swipe, negative for left
+
+      // Ignore swipes shorter than the minimum distance
       if (Math.abs(distance) < minSwipeDistance) return;
 
-      if (distance > 0 && !first) {
-        // Swiped right -> show previous image
+      if (distance > 0 && !first) { // Swiped right
         prevImage();
-      } else if (distance < 0 && !last) {
-        // Swiped left -> show next image
+      } else if (distance < 0 && !last) { // Swiped left
         nextImage();
       }
     };
 
+    // Add listeners only if the lightbox is open
     if (lightboxOpen) {
       window.addEventListener('touchstart', handleTouchStart);
       window.addEventListener('touchend', handleTouchEnd);
     }
 
+    // Cleanup function: remove listeners
     return () => {
       window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [lightboxOpen, nextImage, prevImage, currentImageIndex, images]); // Depend on index/images
+    // Dependencies: re-run effect if any of these change
+  }, [lightboxOpen, nextImage, prevImage, currentImageIndex, images]);
 
-  // Preload adjacent images for smoother navigation with AbortController for cleanup
+  // Effect to preload the next and previous images for smoother navigation
   useEffect(() => {
+    // Only run if lightbox is open and there are multiple images
     if (lightboxOpen && images.length > 1) {
-      // Cancel any previous preloads
+      // Cancel any preloading requests that might still be running from previous state
       Object.values(preloadAbortControllers.current).forEach(controller => {
         controller.abort();
       });
-      preloadAbortControllers.current = {};
+      preloadAbortControllers.current = {}; // Clear the controllers ref
 
-      // Preload function
+      // Function to handle preloading a single image by its index
       const preloadImage = (index: number) => {
+        // Skip if index is invalid or image is already preloaded
         if (index < 0 || index >= images.length || preloadedImages.current[index]) return;
-        
-        const img = new Image();
+
+        const img = new Image(); // Create a new Image object (uses browser's Image constructor)
         const publicId = images[index].publicId;
-        
-        // Create an AbortController for this preload
+
+        // Create an AbortController to allow cancelling this specific preload request
         const controller = new AbortController();
         preloadAbortControllers.current[index] = controller;
-        
-        // Add event listeners
+
+        // Event handler for successful preload
         img.onload = () => {
+          // Only store the preloaded image if the request wasn't aborted
           if (!controller.signal.aborted) {
-            preloadedImages.current[index] = img;
-            delete preloadAbortControllers.current[index];
+            preloadedImages.current[index] = img; // Store in ref
+            delete preloadAbortControllers.current[index]; // Remove controller
           }
         };
-        
+
+        // Event handler for preload error
         img.onerror = () => {
-          delete preloadAbortControllers.current[index];
+          delete preloadAbortControllers.current[index]; // Remove controller
           console.error(`Failed to preload image: ${publicId}`);
         };
-        
-        // Start loading
+
+        // Set the src to start loading the image (using high quality and HDR for lightbox)
         img.src = generateImageUrl(publicId, 1600, undefined, ImageQuality.HIGH, true);
       };
 
-      // Preload next and previous images
+      // Trigger preload for the next image if it exists
       if (currentImageIndex < images.length - 1) {
         preloadImage(currentImageIndex + 1);
       }
-      
+      // Trigger preload for the previous image if it exists
       if (currentImageIndex > 0) {
         preloadImage(currentImageIndex - 1);
       }
 
-      // Cleanup function
+      // Cleanup function: Abort all ongoing preload requests when effect dependencies change or component unmounts
       return () => {
         Object.values(preloadAbortControllers.current).forEach(controller => {
           controller.abort();
         });
       };
     }
+    // Dependencies: Re-run preload logic if index, images array, or lightbox visibility changes
   }, [currentImageIndex, images, lightboxOpen]);
 
-  // Handle main image load event
+  // --- Render Logic ---
+
+  // Callback function triggered when the main high-quality image finishes loading
   const handleMainImageLoaded = () => {
-    setIsLoading(false);
-    // Hide placeholder after slight delay for smoother transition
+    setIsLoading(false); // Set loading state to false
+    // Use a short timeout before hiding the placeholder for a smoother visual transition
     setTimeout(() => {
       setShowPlaceholder(false);
-    }, 300);
+    }, 300); // 300ms delay
   };
 
-  // Early return if lightbox shouldn't be open or no images
+  // Early return: If lightbox shouldn't be open or there are no images, render nothing.
   if (!lightboxOpen || !images || images.length === 0) {
     return null;
   }
 
-  // Get current image data *after* the early return check
+  // Get the data for the currently selected image *after* the early return check
   const currentImage = images[currentImageIndex];
+  // Extra safety check in case the index is somehow invalid
   if (!currentImage) {
-    // Handle case where index might be out of bounds somehow
     console.error("Lightbox: Invalid currentImageIndex or images array.");
-    return null; 
+    return null;
   }
 
-  // Generate URLs now that we know currentImage is valid
+  // Generate the URLs for the placeholder and the main image *after* confirming currentImage is valid
   const placeholderUrl = generatePlaceholderUrl(currentImage.publicId);
   const mainImageUrl = generateImageUrl(
     currentImage.publicId,
-    1920,
-    undefined,
-    ImageQuality.HIGH,
-    true // Enable HDR for lightbox view
+    1920, // Request a larger width for full-screen display
+    undefined, // Let height be determined by aspect ratio
+    ImageQuality.HIGH, // Use high quality preset
+    true // Enable HDR effect for lightbox view
   );
 
-  // Handle URL generation failure
+  // Handle potential failure during URL generation
   if (!mainImageUrl) {
     console.error(`Lightbox: Failed to generate URL for ${currentImage.publicId}`);
-    // Optionally render an error state within the lightbox structure
+    // Render an error message within the lightbox structure
     return (
       <div className="fixed inset-0 bg-black z-50 flex items-center justify-center text-white">
         Error loading image URL.
@@ -215,13 +242,15 @@ const Lightbox: React.FC<LightboxProps> = ({
     );
   }
 
-  // Determine first/last image status
+  // Determine if the current image is the first or the last in the array
   const isFirstImage = currentImageIndex === 0;
   const isLastImage = currentImageIndex === images.length - 1;
 
-  // Return the main JSX for the lightbox
+  // --- JSX Return ---
+  // Render the main lightbox structure
   return (
     <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
+      {/* Close Button (Top Right) */}
       <button
         className="absolute top-5 right-5 text-white text-4xl bg-black bg-opacity-50 rounded-full w-12 h-12 flex items-center justify-center border border-white cursor-pointer z-50 hover:bg-opacity-70 shadow-lg"
         onClick={closeLightbox}
@@ -230,58 +259,60 @@ const Lightbox: React.FC<LightboxProps> = ({
         ×
       </button>
 
-      {/* Image counter */}
+      {/* Image Counter (Top Left) */}
       <div className="absolute top-5 left-5 text-white bg-black bg-opacity-50 px-3 py-1 rounded-full text-sm z-40">
         {currentImageIndex + 1} / {images.length}
       </div>
 
+      {/* Main Image Display Area */}
       <div className="flex items-center justify-center h-screen w-full relative">
-        {/* Loading spinner */}
+        {/* Loading Spinner (visible while isLoading is true) */}
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center z-30">
             <div className="w-20 h-20 border-4 border-gray-400 border-t-white rounded-full animate-spin shadow-lg"></div>
           </div>
         )}
 
-        {/* Blur placeholder image */}
+        {/* Blurred Placeholder Image (visible while showPlaceholder is true) */}
         {showPlaceholder && (
           <div className="absolute inset-0 flex items-center justify-center">
             <img
               src={placeholderUrl}
               alt={`Loading ${currentImage.alt}`}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover" // Cover the area
               style={{
-                filter: 'blur(15px)',
-                transform: 'scale(1.05)',
-                transition: 'opacity 0.5s ease',
-                opacity: isLoading ? 0.7 : 0
+                filter: 'blur(15px)', // Apply blur
+                transform: 'scale(1.05)', // Scale up slightly
+                transition: 'opacity 0.5s ease', // Fade out transition
+                opacity: isLoading ? 0.7 : 0 // Fade out when main image loads
               }}
             />
           </div>
         )}
 
-        {/* Main high quality image */}
+        {/* Main High-Quality Image */}
         <img
           src={mainImageUrl}
           alt={currentImage.alt}
-          className="transition-opacity duration-300"
+          className="transition-opacity duration-300" // Apply transition class
           style={{
-            width: '100vw',
-            height: '100vh',
-            objectFit: 'cover', // Changed from 'contain' to 'cover'
-            opacity: isLoading ? 0 : 1,
-            transition: 'opacity 0.5s ease'
+            width: '100vw', // Full viewport width
+            height: '100vh', // Full viewport height
+            objectFit: 'cover', // Cover the viewport, cropping if necessary
+            opacity: isLoading ? 0 : 1, // Fade in when loaded
+            transition: 'opacity 0.5s ease' // Smooth fade-in
           }}
-          onLoad={handleMainImageLoaded}
-          onError={(e) => {
+          onLoad={handleMainImageLoaded} // Callback when image finishes loading
+          onError={(e) => { // Handle loading errors
             const errorSrc = currentImage.publicId || (e.target as HTMLImageElement).src;
             console.error('Image failed to load:', errorSrc);
-            setIsLoading(false);
+            setIsLoading(false); // Stop showing spinner on error
           }}
         />
       </div>
 
-      {/* Navigation buttons with improved visibility */}
+      {/* Navigation Buttons (Left/Right Arrows) */}
+      {/* Previous Button (shown only if not the first image) */}
       {!isFirstImage && (
         <button
           className="fixed left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white text-3xl rounded-full w-12 h-12 flex items-center justify-center border border-white cursor-pointer shadow-lg"
@@ -291,7 +322,7 @@ const Lightbox: React.FC<LightboxProps> = ({
           ←
         </button>
       )}
-
+      {/* Next Button (shown only if not the last image) */}
       {!isLastImage && (
         <button
           className="fixed right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white text-3xl rounded-full w-12 h-12 flex items-center justify-center border border-white cursor-pointer shadow-lg"
