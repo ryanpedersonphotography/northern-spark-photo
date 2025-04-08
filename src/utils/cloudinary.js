@@ -14,6 +14,13 @@ export function parseCloudinaryUrl(url) {
     return { baseUrl, version, publicId };
 }
 export function createCloudinaryUrl(baseUrl, version, publicId, transformations = {}) {
+    // Mapping for parameter keys (only for exceptions)
+    const paramMapping = {
+        dpr: 'dpr',
+        quality: 'q'
+        // Add other exceptions as needed
+    };
+    
     // Merge with default transformations
     const options = {
         crop: 'fill',
@@ -25,19 +32,51 @@ export function createCloudinaryUrl(baseUrl, version, publicId, transformations 
         quality: 'auto',
         ...transformations
     };
+    
     // Build transformation string from all options
     const transformParams = [];
     for (const [key, value] of Object.entries(options)) {
         if (value !== undefined) {
-            transformParams.push(`${key.charAt(0)}_${value}`);
+            // Use mapping if available, otherwise use first character
+            const paramKey = paramMapping[key] || key.charAt(0);
+            transformParams.push(`${paramKey}_${value}`);
         }
     }
     const transformString = transformParams.join(',');
+    
     // Ensure baseUrl doesn't end with a slash
     const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+    
     // Construct the final URL
     return `${cleanBaseUrl}/upload/${transformString}/v${version}/${publicId}`;
 }
+
+// old image builder
+// export function createCloudinaryUrl(baseUrl, version, publicId, transformations = {}) {
+//     // Merge with default transformations
+//     const options = {
+//         crop: 'fill',
+//         gravity: 'auto:faces',
+//         width: 1600,
+//         height: 900,
+//         dpr: 'auto',
+//         format: 'auto',
+//         quality: 'auto',
+//         ...transformations
+//     };
+//     // Build transformation string from all options
+//     const transformParams = [];
+//     for (const [key, value] of Object.entries(options)) {
+//         if (value !== undefined) {
+//             transformParams.push(`${key.charAt(0)}_${value}`);
+//         }
+//     }
+//     const transformString = transformParams.join(',');
+//     // Ensure baseUrl doesn't end with a slash
+//     const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+//     // Construct the final URL
+//     return `${cleanBaseUrl}/upload/${transformString}/v${version}/${publicId}`;
+// }
 /**
  * Optimize a Cloudinary URL with specified parameters
  */
