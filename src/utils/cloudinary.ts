@@ -101,11 +101,7 @@ export const generateImageUrl = (
   // c_fill,g_auto,w_1200
   image.resize(fill().width(width).gravity('auto'));
 
-  // e_improve
-  image.addTransformation('e_improve'); // Apply improve effect as raw string
-
-  // e_vibrance:40
-  image.addTransformation('e_vibrance:40'); // Apply vibrance effect with strength as raw string
+  // Color-affecting transformations removed (e_improve, e_vibrance)
 
   // q_auto:good
   image.delivery(quality('auto:good'));
