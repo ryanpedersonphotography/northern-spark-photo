@@ -66,11 +66,11 @@ export const generateImageUrl = (
   const image = cld.image(publicId);
   
   // Apply resize transformation with width and optional height
-  // Use auto face detection with subject fallback for gravity
+  // Use default auto gravity
   if (height) {
-    image.resize(fill().width(width).height(height).gravity('auto:face'));
+    image.resize(fill().width(width).height(height).gravity('auto'));
   } else {
-    image.resize(fill().width(width).gravity('auto:face'));
+    image.resize(fill().width(width).gravity('auto'));
   }
   
   // Apply quality settings based on preset
