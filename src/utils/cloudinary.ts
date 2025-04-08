@@ -101,8 +101,8 @@ export const generateImageUrl = (
   // c_fill,g_auto,w_1200
   image.resize(fill().width(width).gravity('auto'));
 
-  // e_improve (Re-added)
-  image.addTransformation('e_improve'); 
+  // e_enhance (Replaced e_improve)
+  image.addTransformation('e_enhance'); 
 
   // e_vibrance remains removed
 
