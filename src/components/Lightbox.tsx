@@ -30,13 +30,7 @@ const Lightbox: React.FC<LightboxProps> = ({
   const preloadedImages = useRef<Record<number, HTMLImageElement>>({});
   const preloadAbortControllers = useRef<Record<number, AbortController>>({});
 
-  // Split conditional return
-  if (!lightboxOpen) return null; 
-  if (!images || images.length === 0) return null;
-
-  const currentImage = images[currentImageIndex];
-  const isFirstImage = currentImageIndex === 0;
-  const isLastImage = currentImageIndex === images.length - 1;
+  // Hooks are called unconditionally above
 
   // Reset loading state when image changes
   useEffect(() => {
@@ -47,14 +41,18 @@ const Lightbox: React.FC<LightboxProps> = ({
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!lightboxOpen) return;
+      if (!lightboxOpen || !images || images.length === 0) return; // Check images validity here too
+      
+      // Recalculate inside hook based on props
+      const first = currentImageIndex === 0;
+      const last = currentImageIndex === images.length - 1;
 
       switch (e.key) {
         case 'ArrowLeft':
-          if (!isFirstImage) prevImage();
+          if (!first) prevImage();
           break;
         case 'ArrowRight':
-          if (!isLastImage) nextImage();
+          if (!last) nextImage();
           break;
         case 'Escape':
           closeLightbox();
@@ -70,7 +68,7 @@ const Lightbox: React.FC<LightboxProps> = ({
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [lightboxOpen, nextImage, prevImage, closeLightbox, isFirstImage, isLastImage]);
+  }, [lightboxOpen, nextImage, prevImage, closeLightbox, currentImageIndex, images]); // Depend on index/images
 
   // Handle touch navigation
   useEffect(() => {
@@ -87,16 +85,22 @@ const Lightbox: React.FC<LightboxProps> = ({
     };
 
     const handleSwipe = () => {
+      if (!images || images.length === 0) return; // Check images validity
+
+      // Recalculate inside hook based on props
+      const first = currentImageIndex === 0;
+      const last = currentImageIndex === images.length - 1;
+      
       // Minimum swipe distance (in px)
       const minSwipeDistance = 50;
       const distance = touchEndX - touchStartX;
 
       if (Math.abs(distance) < minSwipeDistance) return;
 
-      if (distance > 0 && !isFirstImage) {
+      if (distance > 0 && !first) {
         // Swiped right -> show previous image
         prevImage();
-      } else if (distance < 0 && !isLastImage) {
+      } else if (distance < 0 && !last) {
         // Swiped left -> show next image
         nextImage();
       }
@@ -111,7 +115,7 @@ const Lightbox: React.FC<LightboxProps> = ({
       window.removeEventListener('touchstart', handleTouchStart);
       window.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [lightboxOpen, nextImage, prevImage, isFirstImage, isLastImage]);
+  }, [lightboxOpen, nextImage, prevImage, currentImageIndex, images]); // Depend on index/images
 
   // Preload adjacent images for smoother navigation with AbortController for cleanup
   useEffect(() => {
@@ -168,26 +172,6 @@ const Lightbox: React.FC<LightboxProps> = ({
     }
   }, [currentImageIndex, images, lightboxOpen]);
 
-  // Generate URLs for the current image
-  const placeholderUrl = generatePlaceholderUrl(currentImage.publicId);
-  const mainImageUrl = generateImageUrl(
-    currentImage.publicId, 
-    1920, 
-    undefined, 
-    ImageQuality.HIGH, 
-    true // Enable HDR for lightbox view
-  );
-
-  // Handle case where URL generation fails
-  if (!mainImageUrl) {
-    console.error(`Failed to generate URL for main lightbox image: ${currentImage.publicId}`);
-    return (
-      <div className="fixed inset-0 bg-black z-50 flex items-center justify-center text-white">
-        Error loading image.
-      </div>
-    );
-  }
-
   // Handle main image load event
   const handleMainImageLoaded = () => {
     setIsLoading(false);
@@ -197,6 +181,45 @@ const Lightbox: React.FC<LightboxProps> = ({
     }, 300);
   };
 
+  // Early return if lightbox shouldn't be open or no images
+  if (!lightboxOpen || !images || images.length === 0) {
+    return null;
+  }
+
+  // Get current image data *after* the early return check
+  const currentImage = images[currentImageIndex];
+  if (!currentImage) {
+    // Handle case where index might be out of bounds somehow
+    console.error("Lightbox: Invalid currentImageIndex or images array.");
+    return null; 
+  }
+
+  // Generate URLs now that we know currentImage is valid
+  const placeholderUrl = generatePlaceholderUrl(currentImage.publicId);
+  const mainImageUrl = generateImageUrl(
+    currentImage.publicId,
+    1920,
+    undefined,
+    ImageQuality.HIGH,
+    true // Enable HDR for lightbox view
+  );
+
+  // Handle URL generation failure
+  if (!mainImageUrl) {
+    console.error(`Lightbox: Failed to generate URL for ${currentImage.publicId}`);
+    // Optionally render an error state within the lightbox structure
+    return (
+      <div className="fixed inset-0 bg-black z-50 flex items-center justify-center text-white">
+        Error loading image URL.
+      </div>
+    );
+  }
+
+  // Determine first/last image status
+  const isFirstImage = currentImageIndex === 0;
+  const isLastImage = currentImageIndex === images.length - 1;
+
+  // Return the main JSX for the lightbox
   return (
     <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
       <button
