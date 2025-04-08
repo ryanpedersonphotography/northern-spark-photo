@@ -4,7 +4,7 @@ import generateImageUrl, {
   generateSrcSet, 
   ImageQuality 
 } from '../utils/cloudinary'; 
-import { Image } from '../types';
+import { Image } from '../interfaces/Image';
 
 interface ImageGridProps {
   images: Image[];

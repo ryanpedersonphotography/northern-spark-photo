@@ -3,7 +3,7 @@ import generateImageUrl, {
   generatePlaceholderUrl, 
   ImageQuality 
 } from '../utils/cloudinary';
-import { Image } from '../types';
+import { Image } from '../interfaces/Image';
 
 interface LightboxProps {
   images: Image[];

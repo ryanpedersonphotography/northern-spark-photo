@@ -1,14 +1,15 @@
-export interface Image {
-  publicId: string; // Changed from src to publicId
+// Define all types here
+interface Image {
+  publicId: string;
   alt: string;
   orientation: string;
 }
 
-// Add explicit export
-export { Image };
-
-export interface ImageCategory {
+interface ImageCategory {
   'senior-grads': Image[]; 
   nature: Image[];
-  family: Image[];        // Re-added family key
+  family: Image[];
 }
+
+// Export all types
+export type { Image, ImageCategory };
