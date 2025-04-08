@@ -89,13 +89,14 @@ export const generateImageUrl = (
       
       // If HDR mode is explicitly requested, add HDR effect
       if (enableHDR) {
-        image.addTransformation(new Transformation().addActionFromEncoded('e_hdr:10'));
+        // Add HDR effect as a raw transformation string
+        image.addTransformation('e_hdr:10'); 
       }
       break;
   }
   
-  // Enable JPEG optimization (instead of progressive which is not available)
-  image.addTransformation(new Transformation().addActionFromEncoded('fl_progressive'));
+  // Add progressive flag as a raw transformation string
+  image.addTransformation('fl_progressive'); 
   
   // Responsive DPR for high-resolution displays
   image.delivery(dpr('auto'));
@@ -162,10 +163,16 @@ export const parseCloudinaryUrl = (url: string) => {
  * Optimize a Cloudinary URL with specified parameters
  * Legacy function maintained for backward compatibility
  * @param url The complete Cloudinary URL
- * @param transformations Optional transformations to apply
+ * @param transformations Optional transformations to apply (define type)
  * @returns Optimized Cloudinary URL
  */
-export const optimizeCloudinaryUrl = (url: string, transformations = {}) => {
+interface LegacyTransformations {
+  width?: number;
+  height?: number;
+  // Add other potential legacy transformation keys here if needed
+}
+
+export const optimizeCloudinaryUrl = (url: string, transformations: LegacyTransformations = {}) => {
   // Extract publicId from URL
   const publicId = getPublicIdFromUrl(url);
   
@@ -177,8 +184,8 @@ export const optimizeCloudinaryUrl = (url: string, transformations = {}) => {
   // Use the SDK method instead
   return generateImageUrl(
     publicId, 
-    transformations.width as number || 1200,
-    transformations.height as number,
+    transformations.width || 1200, // Access width safely
+    transformations.height, // Access height safely
     ImageQuality.HIGH
   );
 };
