@@ -1,14 +1,6 @@
 import React from 'react';
-import generateImageUrl from '../src/utils/image-helper'; // Import the helper function
+import generateImageUrl from '../src/utils/cloudinary.ts'; // Import from consolidated utility
 import { Image } from '../src/types'; // Corrected import path for types
-
-// Remove old interface definition
-// interface Image {
-//   src: string;
-//   alt: string;
-//   orientation: string;
-// }
-// Removed stray closing brace
 
 interface ImageGridProps {
   images: Image[];
@@ -40,8 +32,6 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
       };
     }
   };
-
-  // Removed getPublicIdFromUrl helper function
 
   return (
     <div style={getGridStyle()}>

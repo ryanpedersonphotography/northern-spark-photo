@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'; // Added useState import
-import generateImageUrl from '../src/utils/image-helper'; // Import the helper function
+import generateImageUrl from '../src/utils/cloudinary.ts'; // Import from consolidated utility
 import { Image } from '../src/types'; // Import updated Image type
 
 interface LightboxProps {

@@ -1,8 +1,10 @@
 import { ImageCategory } from '../types';
+// Import if needed in the future
+import generateImageUrl from '../utils/cloudinary.ts';
 
-// Helper function (can be removed if not needed elsewhere)
+// Helper function if needed
 const getPublicIdFromUrl = (url: string): string | null => {
-  const match = url.match(/\/v\d+\/(.+?)(\.[^.]+)?$/);
+  const match = url.match(/\/v\d+\/(.+?)(\.\w+)?$/);
   return match ? match[1] : null;
 };
 

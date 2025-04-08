@@ -1,4 +1,11 @@
 /**
+ * @deprecated - This file is kept for backward compatibility.
+ * Import from the main cloudinary.ts file instead.
+ */
+
+// Manual implementation for backward compatibility
+
+/**
  * Parse a Cloudinary URL into its components
  */
 export function parseCloudinaryUrl(url) {
@@ -13,15 +20,25 @@ export function parseCloudinaryUrl(url) {
     const publicId = publicIdMatch ? publicIdMatch[1] : '';
     return { baseUrl, version, publicId };
 }
+
 export function createCloudinaryUrl(baseUrl, version, publicId, transformations = {}) {
-    // Mapping for parameter keys (only for exceptions)
+    // Use our new TS utility if possible
+    try {
+        // Dynamic import might not work in all build systems
+        const cloudinaryTs = require('./cloudinary');
+        if (cloudinaryTs && cloudinaryTs.generateImageUrl && publicId) {
+            return cloudinaryTs.generateImageUrl(publicId, transformations.width, transformations.height);
+        }
+    } catch (e) {
+        console.warn('Failed to use TS utility, falling back to JS implementation');
+    }
+    
+    // Fallback to original implementation
     const paramMapping = {
         dpr: 'dpr',
         quality: 'q'
-        // Add other exceptions as needed
     };
     
-    // Merge with default transformations
     const options = {
         crop: 'fill',
         gravity: 'auto:faces',
@@ -33,50 +50,18 @@ export function createCloudinaryUrl(baseUrl, version, publicId, transformations 
         ...transformations
     };
     
-    // Build transformation string from all options
     const transformParams = [];
     for (const [key, value] of Object.entries(options)) {
         if (value !== undefined) {
-            // Use mapping if available, otherwise use first character
             const paramKey = paramMapping[key] || key.charAt(0);
             transformParams.push(`${paramKey}_${value}`);
         }
     }
     const transformString = transformParams.join(',');
-    
-    // Ensure baseUrl doesn't end with a slash
     const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
-    
-    // Construct the final URL
     return `${cleanBaseUrl}/upload/${transformString}/v${version}/${publicId}`;
 }
 
-// old image builder
-// export function createCloudinaryUrl(baseUrl, version, publicId, transformations = {}) {
-//     // Merge with default transformations
-//     const options = {
-//         crop: 'fill',
-//         gravity: 'auto:faces',
-//         width: 1600,
-//         height: 900,
-//         dpr: 'auto',
-//         format: 'auto',
-//         quality: 'auto',
-//         ...transformations
-//     };
-//     // Build transformation string from all options
-//     const transformParams = [];
-//     for (const [key, value] of Object.entries(options)) {
-//         if (value !== undefined) {
-//             transformParams.push(`${key.charAt(0)}_${value}`);
-//         }
-//     }
-//     const transformString = transformParams.join(',');
-//     // Ensure baseUrl doesn't end with a slash
-//     const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
-//     // Construct the final URL
-//     return `${cleanBaseUrl}/upload/${transformString}/v${version}/${publicId}`;
-// }
 /**
  * Optimize a Cloudinary URL with specified parameters
  */

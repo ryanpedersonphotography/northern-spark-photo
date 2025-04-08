@@ -1,5 +1,5 @@
 import React from 'react';
-import generateImageUrl from '../utils/image-helper';
+import generateImageUrl from '../utils/cloudinary';
 
 /**
  * This file demonstrates how to directly fix the image with empty src
