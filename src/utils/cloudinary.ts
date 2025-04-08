@@ -4,7 +4,6 @@ import { quality, format, dpr } from "@cloudinary/url-gen/actions/delivery";
 import { autoGravity, focusOn } from "@cloudinary/url-gen/qualifiers/gravity";
 import { auto } from "@cloudinary/url-gen/qualifiers/quality";
 import { Transformation } from "@cloudinary/url-gen";
-import { progressive } from "@cloudinary/url-gen/actions/delivery";
 import { face } from "@cloudinary/url-gen/qualifiers/focusOn";
 
 // Initialize Cloudinary instance with your cloud name
@@ -95,8 +94,8 @@ export const generateImageUrl = (
       break;
   }
   
-  // Enable progressive loading of JPEGs
-  image.delivery(progressive('semi'));
+  // Enable JPEG optimization (instead of progressive which is not available)
+  image.addTransformation(new Transformation().addActionFromEncoded('fl_progressive'));
   
   // Responsive DPR for high-resolution displays
   image.delivery(dpr('auto'));
