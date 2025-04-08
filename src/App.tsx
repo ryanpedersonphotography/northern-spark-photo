@@ -9,7 +9,7 @@ import AboutSection from '../components/AboutSection';
 import PricingSection from '../components/PricingSection';
 import ContactSection from '../components/ContactSection';
 import Footer from '../components/Footer';
-import { images } from './data/images'; // Will need update after images.ts is modified
+import { images } from './data/images';
 
 const App: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('family'); // Default to family section

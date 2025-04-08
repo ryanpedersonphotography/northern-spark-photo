@@ -1,10 +1,14 @@
 import React from 'react';
+import generateImageUrl from '../src/utils/image-helper'; // Import the helper function
+import { Image } from '../src/types'; // Corrected import path for types
 
-interface Image {
-  src: string;
-  alt: string;
-  orientation: string;
-}
+// Remove old interface definition
+// interface Image {
+//   src: string;
+//   alt: string;
+//   orientation: string;
+// }
+// Removed stray closing brace
 
 interface ImageGridProps {
   images: Image[];
@@ -37,11 +41,23 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
     }
   };
 
+  // Removed getPublicIdFromUrl helper function
+
   return (
     <div style={getGridStyle()}>
-      {images.map((image, index) => (
-        <div 
-          key={index} 
+      {images.map((image, index) => {
+        // Use the helper function to generate the URL
+        const imageUrl = generateImageUrl(image.publicId, 1200); // Pass publicId and desired width
+        
+        // Check if imageUrl is valid before rendering
+        if (!imageUrl) {
+          console.error(`Failed to generate URL for image with publicId: ${image.publicId}`);
+          return null; // Skip rendering this image if URL generation failed
+        }
+
+        return (
+          <div
+          key={index}
           style={{
             overflow: 'hidden',
             cursor: 'pointer',
@@ -54,8 +70,8 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
           onClick={() => openLightbox(index)}
         >
           <img
-            // Use w_1200 and q_auto:best for grid thumbnails to enhance HDR quality with reasonable performance
-            src={image.src.replace('/upload/f_auto,q_auto', '/upload/f_auto,q_auto:best,w_1200')}
+            // Use the generated SDK URL
+            src={imageUrl}
             alt={image.alt}
             style={{
               width: '100%',
@@ -69,10 +85,11 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
             onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
             // Eager load the first few images (likely above the fold), lazy load the rest
             loading={index < 3 ? "eager" : "lazy"}
-            fetchPriority={index < 3 ? "high" : "auto"}
+            // Removed fetchPriority due to conflicting warnings/types
           />
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 };
