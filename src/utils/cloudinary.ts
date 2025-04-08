@@ -1,7 +1,10 @@
 import { Cloudinary } from "@cloudinary/url-gen";
 import { fill } from "@cloudinary/url-gen/actions/resize";
-import { quality, format } from "@cloudinary/url-gen/actions/delivery";
+import { quality, format, dpr } from "@cloudinary/url-gen/actions/delivery";
 import { autoGravity } from "@cloudinary/url-gen/qualifiers/gravity";
+import { auto } from "@cloudinary/url-gen/qualifiers/quality";
+import { Transformation } from "@cloudinary/url-gen";
+import { progressive } from "@cloudinary/url-gen/actions/delivery";
 
 // Initialize Cloudinary instance with your cloud name
 const cld = new Cloudinary({
@@ -13,17 +16,47 @@ const cld = new Cloudinary({
   }
 });
 
+// Image quality presets
+export enum ImageQuality {
+  LOW = 'low',
+  MEDIUM = 'medium',
+  HIGH = 'high',
+  HDR = 'hdr'
+}
+
 /**
- * Generates an optimized Cloudinary URL for a given public ID
+ * Generates a low-resolution placeholder image URL
+ * @param publicId Cloudinary public ID of the image
+ * @returns Low quality placeholder image URL
+ */
+export const generatePlaceholderUrl = (publicId: string): string => {
+  if (!publicId) {
+    console.error('Missing publicId for placeholder image generation');
+    return '';
+  }
+  
+  return cld.image(publicId)
+    .resize(fill().width(20).height(20).gravity(autoGravity()))
+    .delivery(quality(auto()))
+    .delivery(format('auto'))
+    .toURL();
+};
+
+/**
+ * Generates an optimized Cloudinary URL for a given public ID with enhanced quality options
  * @param publicId Cloudinary public ID of the image
  * @param width Optional width for resizing (default: 1200)
  * @param height Optional height for resizing
+ * @param imageQuality Quality preset to use (default: HIGH)
+ * @param enableHDR Whether to enable HDR enhancement (default: false)
  * @returns Fully qualified Cloudinary URL
  */
 export const generateImageUrl = (
   publicId: string, 
   width: number = 1200,
-  height?: number
+  height?: number,
+  imageQuality: ImageQuality = ImageQuality.HIGH,
+  enableHDR: boolean = false
 ): string => {
   if (!publicId) {
     console.error('Missing publicId for image URL generation');
@@ -39,11 +72,59 @@ export const generateImageUrl = (
     image.resize(fill().width(width).gravity(autoGravity()));
   }
   
-  // Apply delivery optimizations
-  image.delivery(quality('auto:best'));
+  // Apply quality settings based on preset
+  switch (imageQuality) {
+    case ImageQuality.LOW:
+      image.delivery(quality('auto:low'));
+      break;
+    case ImageQuality.MEDIUM:
+      image.delivery(quality('auto:good'));
+      break;
+    case ImageQuality.HIGH:
+      image.delivery(quality('auto:best'));
+      break;
+    case ImageQuality.HDR:
+      image.delivery(quality('auto:best'));
+      
+      // If HDR mode is explicitly requested, add HDR effect
+      if (enableHDR) {
+        image.addTransformation(new Transformation().addActionFromEncoded('e_hdr:10'));
+      }
+      break;
+  }
+  
+  // Enable progressive loading of JPEGs
+  image.delivery(progressive('semi'));
+  
+  // Responsive DPR for high-resolution displays
+  image.delivery(dpr('auto'));
+  
+  // Auto format for optimal file type
   image.delivery(format('auto'));
   
   return image.toURL();
+};
+
+/**
+ * Generate responsive srcSet for an image
+ * @param publicId Cloudinary public ID of the image
+ * @param widths Array of width values to include in the srcSet
+ * @param imageQuality Quality preset to use
+ * @returns A complete srcSet string ready to use in an img tag
+ */
+export const generateSrcSet = (
+  publicId: string,
+  widths: number[] = [400, 800, 1200, 1600, 2000],
+  imageQuality: ImageQuality = ImageQuality.HIGH
+): string => {
+  if (!publicId) {
+    console.error('Missing publicId for srcSet generation');
+    return '';
+  }
+  
+  return widths
+    .map(width => `${generateImageUrl(publicId, width, undefined, imageQuality)} ${width}w`)
+    .join(', ');
 };
 
 /**
@@ -93,9 +174,12 @@ export const optimizeCloudinaryUrl = (url: string, transformations = {}) => {
   }
   
   // Use the SDK method instead
-  return generateImageUrl(publicId, 
+  return generateImageUrl(
+    publicId, 
     transformations.width as number || 1200,
-    transformations.height as number);
+    transformations.height as number,
+    ImageQuality.HIGH
+  );
 };
 
 // Export the default function

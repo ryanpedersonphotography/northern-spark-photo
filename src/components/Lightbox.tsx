@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from 'react'; // Added useState import
-import generateImageUrl from '../utils/cloudinary.ts'; // Import from consolidated utility
-import { Image } from '../types'; // Import updated Image type
+import React, { useEffect, useState, useRef } from 'react';
+import generateImageUrl, { 
+  generatePlaceholderUrl, 
+  ImageQuality 
+} from '../utils/cloudinary.ts';
+import { Image } from '../types';
 
 interface LightboxProps {
   images: Image[];
@@ -19,18 +22,24 @@ const Lightbox: React.FC<LightboxProps> = ({
   nextImage,
   prevImage
 }) => {
+  // State for tracking image loading
+  const [isLoading, setIsLoading] = useState(true);
+  const [showPlaceholder, setShowPlaceholder] = useState(true);
+  
+  // Refs for preloaded images
+  const preloadedImages = useRef<Record<number, HTMLImageElement>>({});
+  const preloadAbortControllers = useRef<Record<number, AbortController>>({});
 
   if (!lightboxOpen || !images || images.length === 0) return null;
-
-  const [isLoading, setIsLoading] = useState(true); // Use useState directly
 
   const currentImage = images[currentImageIndex];
   const isFirstImage = currentImageIndex === 0;
   const isLastImage = currentImageIndex === images.length - 1;
 
   // Reset loading state when image changes
-  useEffect(() => { // Use useEffect directly
+  useEffect(() => {
     setIsLoading(true);
+    setShowPlaceholder(true);
   }, [currentImageIndex]);
 
   // Handle keyboard navigation
@@ -102,48 +111,89 @@ const Lightbox: React.FC<LightboxProps> = ({
     };
   }, [lightboxOpen, nextImage, prevImage, isFirstImage, isLastImage]);
 
-  // Preload adjacent images for smoother navigation
+  // Preload adjacent images for smoother navigation with AbortController for cleanup
   useEffect(() => {
     if (lightboxOpen && images.length > 1) {
-      // Preload next image if it exists
+      // Cancel any previous preloads
+      Object.values(preloadAbortControllers.current).forEach(controller => {
+        controller.abort();
+      });
+      preloadAbortControllers.current = {};
+
+      // Preload function
+      const preloadImage = (index: number) => {
+        if (index < 0 || index >= images.length || preloadedImages.current[index]) return;
+        
+        const img = new Image();
+        const publicId = images[index].publicId;
+        
+        // Create an AbortController for this preload
+        const controller = new AbortController();
+        preloadAbortControllers.current[index] = controller;
+        
+        // Add event listeners
+        img.onload = () => {
+          if (!controller.signal.aborted) {
+            preloadedImages.current[index] = img;
+            delete preloadAbortControllers.current[index];
+          }
+        };
+        
+        img.onerror = () => {
+          delete preloadAbortControllers.current[index];
+          console.error(`Failed to preload image: ${publicId}`);
+        };
+        
+        // Start loading
+        img.src = generateImageUrl(publicId, 1600, undefined, ImageQuality.HIGH, true);
+      };
+
+      // Preload next and previous images
       if (currentImageIndex < images.length - 1) {
-        const nextImg = images[currentImageIndex + 1];
-        const nextImageUrl = generateImageUrl(nextImg.publicId, 1600); // Use helper, specify width
-        if (nextImageUrl) {
-          const img = new window.Image(); // Use window.Image to avoid conflict
-          img.src = nextImageUrl;
-        } else {
-          console.error(`Failed to generate preload URL for next image: ${nextImg.publicId}`);
-        }
+        preloadImage(currentImageIndex + 1);
+      }
+      
+      if (currentImageIndex > 0) {
+        preloadImage(currentImageIndex - 1);
       }
 
-      // Preload previous image if it exists
-      if (currentImageIndex > 0) {
-        const prevImg = images[currentImageIndex - 1];
-        const prevImageUrl = generateImageUrl(prevImg.publicId, 1600); // Use helper, specify width
-        if (prevImageUrl) {
-          const img = new window.Image(); // Use window.Image to avoid conflict
-          img.src = prevImageUrl;
-        } else {
-          console.error(`Failed to generate preload URL for previous image: ${prevImg.publicId}`);
-        }
-      }
+      // Cleanup function
+      return () => {
+        Object.values(preloadAbortControllers.current).forEach(controller => {
+          controller.abort();
+        });
+      };
     }
   }, [currentImageIndex, images, lightboxOpen]);
 
-  // Generate URL for the main image using the helper function
-  const mainImageUrl = generateImageUrl(currentImage.publicId, 1600); // Specify width
+  // Generate URLs for the current image
+  const placeholderUrl = generatePlaceholderUrl(currentImage.publicId);
+  const mainImageUrl = generateImageUrl(
+    currentImage.publicId, 
+    1920, 
+    undefined, 
+    ImageQuality.HIGH, 
+    true // Enable HDR for lightbox view
+  );
 
   // Handle case where URL generation fails
   if (!mainImageUrl) {
     console.error(`Failed to generate URL for main lightbox image: ${currentImage.publicId}`);
-    // Optionally return an error message or placeholder component
     return (
       <div className="fixed inset-0 bg-black z-50 flex items-center justify-center text-white">
         Error loading image.
       </div>
     );
   }
+
+  // Handle main image load event
+  const handleMainImageLoaded = () => {
+    setIsLoading(false);
+    // Hide placeholder after slight delay for smoother transition
+    setTimeout(() => {
+      setShowPlaceholder(false);
+    }, 300);
+  };
 
   return (
     <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
@@ -155,35 +205,52 @@ const Lightbox: React.FC<LightboxProps> = ({
         ×
       </button>
 
-      {/* Image counter - can be added back if desired */}
+      {/* Image counter */}
       <div className="absolute top-5 left-5 text-white bg-black bg-opacity-50 px-3 py-1 rounded-full text-sm z-40">
         {currentImageIndex + 1} / {images.length}
       </div>
 
       <div className="flex items-center justify-center h-screen w-full relative">
+        {/* Loading spinner */}
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center z-30">
             <div className="w-20 h-20 border-4 border-gray-400 border-t-white rounded-full animate-spin shadow-lg"></div>
           </div>
         )}
+
+        {/* Blur placeholder image */}
+        {showPlaceholder && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <img
+              src={placeholderUrl}
+              alt={`Loading ${currentImage.alt}`}
+              className="w-full h-full object-cover"
+              style={{
+                filter: 'blur(15px)',
+                transform: 'scale(1.05)',
+                transition: 'opacity 0.5s ease',
+                opacity: isLoading ? 0.7 : 0
+              }}
+            />
+          </div>
+        )}
+
+        {/* Main high quality image */}
         <img
           src={mainImageUrl}
           alt={currentImage.alt}
-          className={`lightbox-image transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+          className="transition-opacity duration-300"
           style={{
             width: '100vw',
             height: '100vh',
-            objectFit: 'cover', /* Better for full viewport display */
-            maxWidth: 'none',
-            maxHeight: 'none'
+            objectFit: 'contain',
+            opacity: isLoading ? 0 : 1,
+            transition: 'opacity 0.5s ease'
           }}
-          onLoad={() => setIsLoading(false)}
+          onLoad={handleMainImageLoaded}
           onError={(e) => {
-            // Attempt to log the original publicId if available, otherwise the src
             const errorSrc = currentImage.publicId || (e.target as HTMLImageElement).src;
             console.error('Image failed to load:', errorSrc);
-            // Fallback might be difficult here if publicId itself is wrong
-            // Consider showing a placeholder or error message
             setIsLoading(false);
           }}
         />
