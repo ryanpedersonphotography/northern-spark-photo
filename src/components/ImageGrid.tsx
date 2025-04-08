@@ -91,11 +91,8 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
             className="overflow-hidden cursor-pointer relative" // Styling classes
             style={{
               margin: 0,
-              padding: 0,
-              // Make portrait images span two rows in the grid
-              gridRow: image.orientation === 'portrait' ? 'span 2' : 'span 1',
-              // Set aspect ratio based on orientation to prevent layout shift while loading
-              aspectRatio: image.orientation === 'portrait' ? '2 / 3' : '3 / 2'
+              padding: 0
+              // gridRow and aspectRatio removed to allow natural image dimensions
             }}
             // Open the lightbox with the correct index when the image container is clicked
             onClick={() => openLightbox(index)}
