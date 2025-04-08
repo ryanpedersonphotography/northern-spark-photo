@@ -104,6 +104,9 @@ export const generateImageUrl = (
   // e_enhance (Replaced e_improve)
   image.addTransformation('e_enhance'); 
 
+  // e_auto_contrast (Added)
+  image.addTransformation('e_auto_contrast');
+
   // e_vibrance remains removed
 
   // q_auto:good
