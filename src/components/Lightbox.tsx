@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import generateImageUrl, { 
   generatePlaceholderUrl, 
   ImageQuality 
-} from '../utils/cloudinary.ts';
-import { Image } from '../types.ts';
+} from '../utils/cloudinary';
+import { Image } from '../types';
 
 interface LightboxProps {
   images: Image[];

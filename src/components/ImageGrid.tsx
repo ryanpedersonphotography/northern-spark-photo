@@ -3,8 +3,8 @@ import generateImageUrl, {
   generatePlaceholderUrl, 
   generateSrcSet, 
   ImageQuality 
-} from '../utils/cloudinary.ts'; 
-import { Image } from '../types.ts';
+} from '../utils/cloudinary'; 
+import { Image } from '../types';
 
 interface ImageGridProps {
   images: Image[];

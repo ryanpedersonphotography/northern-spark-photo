@@ -1,6 +1,6 @@
-import { ImageCategory } from '../types.ts';
+import { ImageCategory } from '../types';
 // Import if needed in the future
-import generateImageUrl from '../utils/cloudinary.ts';
+import generateImageUrl from '../utils/cloudinary';
 
 // Helper function if needed
 const getPublicIdFromUrl = (url: string): string | null => {
