@@ -119,7 +119,7 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
               // Define how the browser should select from srcSet based on viewport width
               sizes={`(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw`}
               alt={image.alt} // Image description
-              className="w-full h-full object-cover block" // Styling classes
+              className="w-full object-cover block" // Removed h-full
               style={{
                 transition: 'transform 0.5s ease, opacity 0.3s ease', // Transitions for hover and load-in
                 // Apply slight scale-up and fade-in effect when loaded
