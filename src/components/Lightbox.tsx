@@ -3,7 +3,7 @@ import generateImageUrl, {
   generatePlaceholderUrl, 
   ImageQuality 
 } from '../utils/cloudinary.ts';
-import { Image } from '../types';
+import { Image } from '../types.ts';
 
 interface LightboxProps {
   images: Image[];

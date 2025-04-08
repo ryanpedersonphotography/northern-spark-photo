@@ -4,6 +4,9 @@ export interface Image {
   orientation: string;
 }
 
+// Add explicit export
+export { Image };
+
 export interface ImageCategory {
   'senior-grads': Image[]; 
   nature: Image[];

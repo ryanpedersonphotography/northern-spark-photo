@@ -1,4 +1,4 @@
-import { ImageCategory } from '../types';
+import { ImageCategory } from '../types.ts';
 // Import if needed in the future
 import generateImageUrl from '../utils/cloudinary.ts';
 
