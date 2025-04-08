@@ -1,9 +1,11 @@
 // Import React and necessary hooks/components
 import React, { useEffect, useState, useRef } from 'react';
 // Import Cloudinary utility functions and types
-import generateImageUrl, {
-  generatePlaceholderUrl,
-  ImageQuality
+import { // Use named imports now that default export might change
+  generateImageUrl, 
+  generatePlaceholderUrl, 
+  generateRawImageUrl, // Import the new function
+  ImageQuality 
 } from '../utils/cloudinary';
 // Import the Image type definition using type-only import to avoid naming conflicts
 import type { Image } from '../interfaces/Image';
@@ -223,13 +225,8 @@ const Lightbox: React.FC<LightboxProps> = ({
 
   // Generate the URLs for the placeholder and the main image *after* confirming currentImage is valid
   const placeholderUrl = generatePlaceholderUrl(currentImage.publicId);
-  const mainImageUrl = generateImageUrl(
-    currentImage.publicId,
-    1920, // Request a larger width for full-screen display
-    undefined, // Let height be determined by aspect ratio
-    ImageQuality.HIGH, // Use high quality preset
-    true // Enable HDR effect for lightbox view
-  );
+  // Use the new function for the main image URL to get raw version (f_auto, q_auto only)
+  const mainImageUrl = generateRawImageUrl(currentImage.publicId); 
 
   // Handle potential failure during URL generation
   if (!mainImageUrl) {

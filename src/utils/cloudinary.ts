@@ -52,6 +52,25 @@ export const generatePlaceholderUrl = (publicId: string): string => {
 };
 
 /**
+ * Generates a "raw" Cloudinary URL, applying only automatic format and quality.
+ * No resizing, cropping, or effects are applied.
+ * @param publicId Cloudinary public ID of the image
+ * @returns URL string with f_auto, q_auto
+ */
+export const generateRawImageUrl = (publicId: string): string => {
+  if (!publicId) {
+    console.error('Missing publicId for raw image URL generation');
+    return '';
+  }
+  
+  // Apply only automatic format and quality
+  return cld.image(publicId)
+    .delivery(format('auto')) // f_auto
+    .delivery(quality('auto')) // q_auto
+    .toURL();
+};
+
+/**
  * Generates an optimized Cloudinary URL for a given public ID with enhanced quality options.
  * This is the main function for generating image URLs used in components.
  * @param publicId Cloudinary public ID of the image (e.g., 'folder/imagename')
