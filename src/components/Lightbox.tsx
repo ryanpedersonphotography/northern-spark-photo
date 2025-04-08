@@ -3,7 +3,7 @@ import generateImageUrl, {
   generatePlaceholderUrl, 
   ImageQuality 
 } from '../utils/cloudinary';
-import { Image } from '../types'; // Changed import path to match your project structure
+import type { Image } from '../interfaces/Image'; // Use type-only import
 
 interface LightboxProps {
   images: Image[];
