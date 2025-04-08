@@ -298,7 +298,7 @@ const Lightbox: React.FC<LightboxProps> = ({
           style={{
             width: '100vw', // Full viewport width
             height: '100vh', // Full viewport height
-            objectFit: 'cover', // Cover the viewport, cropping if necessary
+            objectFit: 'contain', // Ensure entire image is visible, no cropping
             opacity: isLoading ? 0 : 1, // Fade in when loaded
             transition: 'opacity 0.5s ease' // Smooth fade-in
           }}
