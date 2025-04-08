@@ -7,6 +7,7 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true,
+    allowedHosts: ['devserver-feature-cloudinary-sdk-upgrade--northernsparkphoto.netlify.app'],
   },
   build: {
     // Generate source maps for better debugging
