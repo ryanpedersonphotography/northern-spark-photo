@@ -1,10 +1,5 @@
 import React from 'react';
-import cld from '../src/utils/cloudinary-instance'; // Corrected import path
-import { fill } from "@cloudinary/url-gen/actions/resize";
-import { quality } from "@cloudinary/url-gen/actions/delivery";
-import { format } from "@cloudinary/url-gen/actions/delivery";
-import { autoGravity } from "@cloudinary/url-gen/qualifiers/gravity"; // If needed for fill
-
+import generateImageUrl from '../src/utils/image-helper'; // Import the helper function
 import { Image } from '../src/types'; // Corrected import path for types
 
 // Remove old interface definition
@@ -51,16 +46,18 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
   return (
     <div style={getGridStyle()}>
       {images.map((image, index) => {
-        // Use image.publicId directly
-        const imageUrl = cld.image(image.publicId)
-            .resize(fill().width(1200).gravity(autoGravity())) // Use fill crop, specify width, auto-gravity
-            .delivery(quality('auto:best')) // Set quality
-            .delivery(format('auto')) // Set format
-            .toURL();
-        // No need for fallback or warning if publicId is guaranteed by the data structure
+        // Use the helper function to generate the URL
+        const imageUrl = generateImageUrl(image.publicId, 1200); // Pass publicId and desired width
+        
+        // Check if imageUrl is valid before rendering
+        if (!imageUrl) {
+          console.error(`Failed to generate URL for image with publicId: ${image.publicId}`);
+          return null; // Skip rendering this image if URL generation failed
+        }
+
         return (
           <div
-          key={index} 
+          key={index}
           style={{
             overflow: 'hidden',
             cursor: 'pointer',

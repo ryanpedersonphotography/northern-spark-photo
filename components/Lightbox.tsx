@@ -1,8 +1,5 @@
-import React, { useEffect } from 'react';
-import cld from '../src/utils/cloudinary-instance'; // Import the configured Cloudinary instance
-import { fill } from "@cloudinary/url-gen/actions/resize";
-import { quality, format, dpr } from "@cloudinary/url-gen/actions/delivery";
-import { autoGravity } from "@cloudinary/url-gen/qualifiers/gravity";
+import React, { useEffect, useState } from 'react'; // Added useState import
+import generateImageUrl from '../src/utils/image-helper'; // Import the helper function
 import { Image } from '../src/types'; // Import updated Image type
 
 interface LightboxProps {
@@ -25,14 +22,14 @@ const Lightbox: React.FC<LightboxProps> = ({
 
   if (!lightboxOpen || !images || images.length === 0) return null;
 
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoading, setIsLoading] = useState(true); // Use useState directly
 
   const currentImage = images[currentImageIndex];
   const isFirstImage = currentImageIndex === 0;
   const isLastImage = currentImageIndex === images.length - 1;
 
   // Reset loading state when image changes
-  React.useEffect(() => {
+  useEffect(() => { // Use useEffect directly
     setIsLoading(true);
   }, [currentImageIndex]);
 
@@ -111,34 +108,42 @@ const Lightbox: React.FC<LightboxProps> = ({
       // Preload next image if it exists
       if (currentImageIndex < images.length - 1) {
         const nextImg = images[currentImageIndex + 1];
-        const img = new window.Image(); // Use window.Image to avoid conflict
-        img.src = cld.image(nextImg.publicId)
-            .resize(fill().width(1600).height(900).gravity(autoGravity())) // Match main image transformations
-            .delivery(format('auto'))
-            .delivery(quality('auto'))
-            .toURL();
+        const nextImageUrl = generateImageUrl(nextImg.publicId, 1600); // Use helper, specify width
+        if (nextImageUrl) {
+          const img = new window.Image(); // Use window.Image to avoid conflict
+          img.src = nextImageUrl;
+        } else {
+          console.error(`Failed to generate preload URL for next image: ${nextImg.publicId}`);
+        }
       }
 
       // Preload previous image if it exists
       if (currentImageIndex > 0) {
         const prevImg = images[currentImageIndex - 1];
-        const img = new window.Image(); // Use window.Image to avoid conflict
-        img.src = cld.image(prevImg.publicId)
-            .resize(fill().width(1600).height(900).gravity(autoGravity())) // Match main image transformations
-            .delivery(format('auto'))
-            .delivery(quality('auto'))
-            .toURL();
+        const prevImageUrl = generateImageUrl(prevImg.publicId, 1600); // Use helper, specify width
+        if (prevImageUrl) {
+          const img = new window.Image(); // Use window.Image to avoid conflict
+          img.src = prevImageUrl;
+        } else {
+          console.error(`Failed to generate preload URL for previous image: ${prevImg.publicId}`);
+        }
       }
     }
   }, [currentImageIndex, images, lightboxOpen]);
 
-  // Generate URL for the main image
-  const mainImageUrl = cld.image(currentImage.publicId)
-    .resize(fill().width(1600).height(900).gravity(autoGravity())) // Apply fill crop with dimensions and auto gravity
-    .delivery(dpr('auto')) // Auto DPR
-    .delivery(format('auto')) // Auto format
-    .delivery(quality('auto')) // Auto quality
-    .toURL();
+  // Generate URL for the main image using the helper function
+  const mainImageUrl = generateImageUrl(currentImage.publicId, 1600); // Specify width
+
+  // Handle case where URL generation fails
+  if (!mainImageUrl) {
+    console.error(`Failed to generate URL for main lightbox image: ${currentImage.publicId}`);
+    // Optionally return an error message or placeholder component
+    return (
+      <div className="fixed inset-0 bg-black z-50 flex items-center justify-center text-white">
+        Error loading image.
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
