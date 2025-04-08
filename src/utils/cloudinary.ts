@@ -136,9 +136,8 @@ export const generateImageUrl = (
   // Delivers higher resolution images to devices with high-density screens (e.g., Retina).
   image.delivery(dpr('auto'));
   
-  // Apply automatic format selection ('f_auto').
-  // Cloudinary automatically delivers the image in the most optimal format supported by the browser (e.g., AVIF, WebP).
-  image.delivery(format('auto'));
+  // Force format to JPG ('f_jpg').
+  image.delivery(format('jpg'));
   
   // Convert the configured CloudinaryImage object to its final URL string.
   return image.toURL();
