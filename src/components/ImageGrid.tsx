@@ -1,5 +1,7 @@
 // Import React and necessary hooks/components
 import React, { useState } from 'react';
+// Import the Masonry component
+import Masonry from 'react-masonry-css';
 // Import Cloudinary utility functions and types
 import generateImageUrl, {
   generatePlaceholderUrl,
@@ -12,45 +14,26 @@ import { Image } from '../interfaces/Image';
 // Define the props expected by the ImageGrid component
 interface ImageGridProps {
   images: Image[]; // Array of image objects to display
-  windowWidth: number; // Current window width for responsive grid layout
+  // windowWidth is no longer needed as breakpoints are handled by react-masonry-css
   openLightbox: (index: number) => void; // Function to open the lightbox for a specific image index
 }
 
 /**
  * ImageGrid Component
- * Displays a responsive grid of images with placeholders and hover effects.
+ * Displays a responsive masonry layout of images using react-masonry-css.
+ * Includes placeholders and hover effects.
  * Handles opening the lightbox when an image is clicked.
  */
-const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox }) => {
+const ImageGrid: React.FC<ImageGridProps> = ({ images, openLightbox }) => {
   // State to track which images have finished loading their main, high-quality version.
   // Uses a record (object) where keys are publicIds and values are booleans.
   const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
 
-  /**
-   * Determines the grid styling based on the current window width.
-   * @returns {React.CSSProperties} CSS style object for the grid container.
-   */
-  const getGridStyle = (): React.CSSProperties => {
-    // Uses Tailwind-like breakpoints for responsiveness
-    if (windowWidth < 640) { // Small screens (mobile) - 1 column
-      return {
-        display: 'grid',
-        gridTemplateColumns: '1fr',
-        gap: '1rem' // Gap between grid items
-      };
-    } else if (windowWidth < 1024) { // Medium screens (tablet) - 2 columns
-      return {
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '1rem'
-      };
-    } else { // Large screens (desktop) - 3 columns
-      return {
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr 1fr',
-        gap: '1rem'
-      };
-    }
+  // Define breakpoints for the masonry layout columns
+  const breakpointColumnsObj = {
+    default: 3, // Default number of columns (desktop)
+    1024: 2,    // 2 columns at 1024px screen width and below
+    640: 1      // 1 column at 640px screen width and below
   };
 
   /**
@@ -65,10 +48,14 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
     }));
   };
 
-  // Render the grid container
+  // Render the Masonry layout container
   return (
-    <div style={getGridStyle()}>
-      {/* Map over the images array to render each image item */}
+    <Masonry
+      breakpointCols={breakpointColumnsObj}
+      className="my-masonry-grid" // Custom class for the grid container
+      columnClassName="my-masonry-grid_column" // Custom class for columns
+    >
+      {/* Map over the images array to render each image item within a column */}
       {images.map((image, index) => {
         // Generate necessary URLs using Cloudinary utilities
         const placeholderUrl = generatePlaceholderUrl(image.publicId); // Tiny, blurred placeholder
@@ -89,11 +76,8 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
           <div
             key={index} // Unique key for React list rendering
             className="overflow-hidden cursor-pointer relative" // Styling classes
-            style={{
-              margin: 0,
-              padding: 0
-              // gridRow and aspectRatio removed to allow natural image dimensions
-            }}
+            // Add some bottom margin to each grid item for spacing
+            style={{ marginBottom: '1rem' }} 
             // Open the lightbox with the correct index when the image container is clicked
             onClick={() => openLightbox(index)}
           >
@@ -147,7 +131,7 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, windowWidth, openLightbox
           </div>
         );
       })}
-    </div>
+    </Masonry>
   );
 };
 
