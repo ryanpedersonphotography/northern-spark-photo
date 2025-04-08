@@ -30,7 +30,9 @@ const Lightbox: React.FC<LightboxProps> = ({
   const preloadedImages = useRef<Record<number, HTMLImageElement>>({});
   const preloadAbortControllers = useRef<Record<number, AbortController>>({});
 
-  if (!lightboxOpen || !images || images.length === 0) return null;
+  // Split conditional return
+  if (!lightboxOpen) return null; 
+  if (!images || images.length === 0) return null;
 
   const currentImage = images[currentImageIndex];
   const isFirstImage = currentImageIndex === 0;
