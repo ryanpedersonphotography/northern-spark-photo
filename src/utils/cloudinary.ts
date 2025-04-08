@@ -1,10 +1,11 @@
 import { Cloudinary } from "@cloudinary/url-gen";
 import { fill } from "@cloudinary/url-gen/actions/resize";
 import { quality, format, dpr } from "@cloudinary/url-gen/actions/delivery";
-import { autoGravity } from "@cloudinary/url-gen/qualifiers/gravity";
+import { autoGravity, focusOn } from "@cloudinary/url-gen/qualifiers/gravity";
 import { auto } from "@cloudinary/url-gen/qualifiers/quality";
 import { Transformation } from "@cloudinary/url-gen";
 import { progressive } from "@cloudinary/url-gen/actions/delivery";
+import { face } from "@cloudinary/url-gen/qualifiers/focusOn";
 
 // Initialize Cloudinary instance with your cloud name
 const cld = new Cloudinary({
@@ -36,7 +37,7 @@ export const generatePlaceholderUrl = (publicId: string): string => {
   }
   
   return cld.image(publicId)
-    .resize(fill().width(20).height(20).gravity(autoGravity()))
+    .resize(fill().width(20).height(20).gravity(focusOn(face())))
     .delivery(quality(auto()))
     .delivery(format('auto'))
     .toURL();
@@ -66,10 +67,11 @@ export const generateImageUrl = (
   const image = cld.image(publicId);
   
   // Apply resize transformation with width and optional height
+  // Use face detection with auto-gravity fallback
   if (height) {
-    image.resize(fill().width(width).height(height).gravity(autoGravity()));
+    image.resize(fill().width(width).height(height).gravity(focusOn(face())));
   } else {
-    image.resize(fill().width(width).gravity(autoGravity()));
+    image.resize(fill().width(width).gravity(focusOn(face())));
   }
   
   // Apply quality settings based on preset
