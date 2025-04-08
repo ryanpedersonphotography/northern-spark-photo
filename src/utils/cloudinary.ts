@@ -101,7 +101,10 @@ export const generateImageUrl = (
   // c_fill,g_auto,w_1200
   image.resize(fill().width(width).gravity('auto'));
 
-  // Color-affecting transformations removed (e_improve, e_vibrance)
+  // e_improve (Re-added)
+  image.addTransformation('e_improve'); 
+
+  // e_vibrance remains removed
 
   // q_auto:good
   image.delivery(quality('auto:good'));
