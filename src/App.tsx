@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import Header from '../components/Header';
-import Navigation from '../components/Navigation';
-import ImageGrid from '../components/ImageGrid';
-import Lightbox from '../components/Lightbox';
-import AboutSection from '../components/AboutSection';
-import PricingSection from '../components/PricingSection';
-import ContactSection from '../components/ContactSection';
-import Footer from '../components/Footer';
+import Header from './components/Header';
+import Navigation from './components/Navigation';
+import ImageGrid from './components/ImageGrid';
+import Lightbox from './components/Lightbox';
+import AboutSection from './components/AboutSection';
+import PricingSection from './components/PricingSection';
+import ContactSection from './components/ContactSection';
+import Footer from './components/Footer';
 import { images } from './data/images';
 
 const App: React.FC = () => {
