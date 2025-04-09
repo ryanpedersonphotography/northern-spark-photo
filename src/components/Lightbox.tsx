@@ -1,11 +1,10 @@
 // Import React and necessary hooks/components
 import React, { useEffect, useState, useRef } from 'react';
 // Import Cloudinary utility functions and types
-import { // Use named imports now that default export might change
-  generateImageUrl, 
-  generatePlaceholderUrl, 
-  generateRawImageUrl, // Import the new function
-  ImageQuality 
+import {
+  generateImageUrl,
+  generatePlaceholderUrl,
+  generateRawImageUrl
 } from '../utils/cloudinary';
 // Import the Image type definition using type-only import to avoid naming conflicts
 import type { Image } from '../interfaces/Image';
@@ -33,22 +32,15 @@ const Lightbox: React.FC<LightboxProps> = ({
   nextImage,
   prevImage
 }) => {
+
   // State to track if the main high-quality image is still loading
   const [isLoading, setIsLoading] = useState(true);
-  // State to control the visibility of the blurred placeholder image
-  const [showPlaceholder, setShowPlaceholder] = useState(true);
-
-  // Ref to store preloaded HTMLImageElement objects for adjacent images
-  const preloadedImages = useRef<Record<number, HTMLImageElement>>({});
-  // Ref to store AbortController instances for ongoing preload requests
-  const preloadAbortControllers = useRef<Record<number, AbortController>>({});
 
   // --- Hooks --- (Called unconditionally at the top)
 
   // Effect to reset loading states whenever the currentImageIndex changes
   useEffect(() => {
     setIsLoading(true); // Assume the new image is loading
-    setShowPlaceholder(true); // Show the placeholder initially
   }, [currentImageIndex]); // Dependency: run only when the index changes
 
   // Effect to handle keyboard navigation (ArrowLeft, ArrowRight, Escape)
@@ -139,75 +131,40 @@ const Lightbox: React.FC<LightboxProps> = ({
     // Dependencies: re-run effect if any of these change
   }, [lightboxOpen, nextImage, prevImage, currentImageIndex, images]);
 
-  // Effect to preload the next and previous images for smoother navigation
+  // Simplified preloading using Image constructor
   useEffect(() => {
-    // Only run if lightbox is open and there are multiple images
+    // Reset loading state when the image changes
+    setIsLoading(true);
+    
+    // Preload adjacent images
     if (lightboxOpen && images.length > 1) {
-      // Cancel any preloading requests that might still be running from previous state
-      Object.values(preloadAbortControllers.current).forEach(controller => {
-        controller.abort();
-      });
-      preloadAbortControllers.current = {}; // Clear the controllers ref
-
-      // Function to handle preloading a single image by its index
-      const preloadImage = (index: number) => {
-        // Skip if index is invalid or image is already preloaded
-        if (index < 0 || index >= images.length || preloadedImages.current[index]) return;
-
-        const img = new Image(); // Create a new Image object (uses browser's Image constructor)
-        const publicId = images[index].publicId;
-
-        // Create an AbortController to allow cancelling this specific preload request
-        const controller = new AbortController();
-        preloadAbortControllers.current[index] = controller;
-
-        // Event handler for successful preload
-        img.onload = () => {
-          // Only store the preloaded image if the request wasn't aborted
-          if (!controller.signal.aborted) {
-            preloadedImages.current[index] = img; // Store in ref
-            delete preloadAbortControllers.current[index]; // Remove controller
-          }
-        };
-
-        // Event handler for preload error
-        img.onerror = () => {
-          delete preloadAbortControllers.current[index]; // Remove controller
-          console.error(`Failed to preload image: ${publicId}`);
-        };
-
-        // Set the src to start loading the image (using high quality and HDR for lightbox)
-        img.src = generateImageUrl(publicId, 1600, undefined, ImageQuality.HIGH, true);
-      };
-
-      // Trigger preload for the next image if it exists
+      // Preload next image if it exists
       if (currentImageIndex < images.length - 1) {
-        preloadImage(currentImageIndex + 1);
+        const nextPublicId = images[currentImageIndex + 1].publicId;
+        const nextImageUrl = generateRawImageUrl(nextPublicId);
+        if (nextImageUrl) {
+          const img = new Image();
+          img.src = nextImageUrl;
+        }
       }
-      // Trigger preload for the previous image if it exists
+      
+      // Preload previous image if it exists
       if (currentImageIndex > 0) {
-        preloadImage(currentImageIndex - 1);
+        const prevPublicId = images[currentImageIndex - 1].publicId;
+        const prevImageUrl = generateRawImageUrl(prevPublicId);
+        if (prevImageUrl) {
+          const img = new Image();
+          img.src = prevImageUrl;
+        }
       }
-
-      // Cleanup function: Abort all ongoing preload requests when effect dependencies change or component unmounts
-      return () => {
-        Object.values(preloadAbortControllers.current).forEach(controller => {
-          controller.abort();
-        });
-      };
     }
-    // Dependencies: Re-run preload logic if index, images array, or lightbox visibility changes
   }, [currentImageIndex, images, lightboxOpen]);
 
   // --- Render Logic ---
 
   // Callback function triggered when the main high-quality image finishes loading
   const handleMainImageLoaded = () => {
-    setIsLoading(false); // Set loading state to false
-    // Use a short timeout before hiding the placeholder for a smoother visual transition
-    setTimeout(() => {
-      setShowPlaceholder(false);
-    }, 300); // 300ms delay
+    setIsLoading(false);
   };
 
   // Early return: If lightbox shouldn't be open or there are no images, render nothing.
@@ -223,21 +180,20 @@ const Lightbox: React.FC<LightboxProps> = ({
     return null;
   }
 
-  // Generate the URLs for the placeholder and the main image *after* confirming currentImage is valid
+  // Generate the URLs for the placeholder and the main image
   const placeholderUrl = generatePlaceholderUrl(currentImage.publicId);
-  // Use the new function for the main image URL to get raw version (f_auto, q_auto only)
-  const mainImageUrl = generateRawImageUrl(currentImage.publicId); 
-
+  const mainImageUrl = generateRawImageUrl(currentImage.publicId);
+  
   // Handle potential failure during URL generation
   if (!mainImageUrl) {
     console.error(`Lightbox: Failed to generate URL for ${currentImage.publicId}`);
-    // Render an error message within the lightbox structure
     return (
       <div className="fixed inset-0 bg-black z-50 flex items-center justify-center text-white">
         Error loading image URL.
       </div>
     );
   }
+
 
   // Determine if the current image is the first or the last in the array
   const isFirstImage = currentImageIndex === 0;
@@ -270,18 +226,18 @@ const Lightbox: React.FC<LightboxProps> = ({
           </div>
         )}
 
-        {/* Blurred Placeholder Image (visible while showPlaceholder is true) */}
-        {showPlaceholder && (
+        {/* Blurred Placeholder Image (visible while isLoading is true) */}
+        {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center">
             <img
               src={placeholderUrl}
               alt={`Loading ${currentImage.alt}`}
-              className="w-full h-full object-cover" // Cover the area
+              className="w-full h-full object-cover"
               style={{
-                filter: 'blur(15px)', // Apply blur
-                transform: 'scale(1.05)', // Scale up slightly
-                transition: 'opacity 0.5s ease', // Fade out transition
-                opacity: isLoading ? 0.7 : 0 // Fade out when main image loads
+                filter: 'blur(15px)',
+                transform: 'scale(1.05)',
+                transition: 'opacity 0.5s ease',
+                opacity: 0.7
               }}
             />
           </div>
@@ -291,19 +247,15 @@ const Lightbox: React.FC<LightboxProps> = ({
         <img
           src={mainImageUrl}
           alt={currentImage.alt}
-          className="transition-opacity duration-300" // Apply transition class
+          className="max-w-full max-h-full object-contain transition-opacity duration-300"
           style={{
-            width: '100vw', // Full viewport width
-            height: '100vh', // Full viewport height
-            objectFit: 'contain', // Ensure entire image is visible, no cropping
-            opacity: isLoading ? 0 : 1, // Fade in when loaded
-            transition: 'opacity 0.5s ease' // Smooth fade-in
+            opacity: isLoading ? 0 : 1,
+            transition: 'opacity 0.5s ease'
           }}
-          onLoad={handleMainImageLoaded} // Callback when image finishes loading
-          onError={(e) => { // Handle loading errors
-            const errorSrc = currentImage.publicId || (e.target as HTMLImageElement).src;
-            console.error('Image failed to load:', errorSrc);
-            setIsLoading(false); // Stop showing spinner on error
+          onLoad={handleMainImageLoaded}
+          onError={() => {
+            console.error('Image failed to load:', currentImage.publicId);
+            setIsLoading(false);
           }}
         />
       </div>
