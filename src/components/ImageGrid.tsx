@@ -70,7 +70,7 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, openLightbox }) => {
                 // Placeholder plugin creates a blurred loading effect
                 placeholder({ mode: 'blur' }),
                 // Lazyload plugin defers loading until the image is near the viewport
-                lazyload({ rootMargin: '10px 20px 10px 30px', threshold: 0.25 })
+                lazyload({ rootMargin: '200px 20px 200px 30px', threshold: 0.1 })
               ]}
               alt={image.alt}
               className="w-full object-cover block transition-all duration-500 filter grayscale hover:grayscale-0 hover:scale-105"

@@ -8,7 +8,8 @@ import AboutSection from './components/AboutSection';
 import PricingSection from './components/PricingSection';
 import ContactSection from './components/ContactSection';
 import Footer from './components/Footer';
-import { images } from './data/images';
+import images from './data/images';
+import { generateImageUrl } from './utils/cloudinary';
 
 const App: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState('family'); // Default to family section
@@ -28,6 +29,23 @@ const App: React.FC = () => {
     
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Preload critical images on mount
+  const preloadCriticalImages = (categoryName: string, count: number = 3) => {
+    console.log(`Preloading ${count} critical images from ${categoryName} category`);
+    const categoryImages = images[categoryName as keyof typeof images] || [];
+    const criticalImages = categoryImages.slice(0, count);
+  
+    criticalImages.forEach((image, index) => {
+      const img = new Image();
+      img.src = generateImageUrl(image.publicId, 1200);
+      console.log(`Preloading image ${index + 1}/${count}: ${image.publicId}`);
+    });
+  };
+  
+  useEffect(() => {
+    preloadCriticalImages('family', 3);
   }, []);
 
   // Handle navigation clicks
@@ -94,7 +112,6 @@ const App: React.FC = () => {
     const categoryImages = images[activeCategory as keyof typeof images] || []; // Ensure category exists
     return <ImageGrid
       images={categoryImages}
-      windowWidth={windowWidth}
       openLightbox={openLightbox} 
     />;
   };
