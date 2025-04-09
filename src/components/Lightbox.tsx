@@ -4,8 +4,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import {
   generateImageUrl,
   generatePlaceholderUrl,
-  generateRawImageUrl
+  generateRawImageUrl,
+  cld
 } from '../utils/cloudinary';
+import { AdvancedImage, placeholder } from '@cloudinary/react';
 // Import the Image type definition using type-only import to avoid naming conflicts
 import type { Image } from '../interfaces/Image';
 
@@ -243,19 +245,22 @@ const Lightbox: React.FC<LightboxProps> = ({
           </div>
         )}
 
-        {/* Main High-Quality Image */}
-        <img
-          src={mainImageUrl}
+        {/* Main High-Quality Image using AdvancedImage */}
+        <AdvancedImage
+          cldImg={cld.image(currentImage.publicId)}
+          plugins={[
+            placeholder({ mode: 'blur' })
+          ]}
           alt={currentImage.alt}
           className="max-w-full max-h-full object-contain transition-opacity duration-300"
-          style={{
-            opacity: isLoading ? 0 : 1,
-            transition: 'opacity 0.5s ease'
-          }}
           onLoad={handleMainImageLoaded}
           onError={() => {
             console.error('Image failed to load:', currentImage.publicId);
             setIsLoading(false);
+          }}
+          style={{
+            opacity: isLoading ? 0 : 1,
+            transition: 'opacity 0.5s ease'
           }}
         />
       </div>

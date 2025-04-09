@@ -228,4 +228,5 @@ export const optimizeCloudinaryUrl = (url: string, transformations: LegacyTransf
 // Note: If components import specific functions like generatePlaceholderUrl,
 // they should use named imports: import { generateImageUrl, generatePlaceholderUrl, ... } from '...'
 // If they only need generateImageUrl, they can use: import generateImageUrl from '...'
+export { cld, fill, quality, format, dpr, grayscale };
 export default generateImageUrl;

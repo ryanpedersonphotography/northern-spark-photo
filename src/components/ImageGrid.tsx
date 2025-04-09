@@ -5,10 +5,7 @@ import Masonry from 'react-masonry-css';
 // Import Cloudinary components and plugins
 import { AdvancedImage, lazyload, responsive, placeholder } from '@cloudinary/react';
 // Import Cloudinary utility functions and types
-import { Cloudinary } from "@cloudinary/url-gen";
-import { fill } from "@cloudinary/url-gen/actions/resize";
-import { grayscale } from "@cloudinary/url-gen/actions/effect";
-import { quality, format, dpr } from "@cloudinary/url-gen/actions/delivery";
+import { cld, fill, quality, format, dpr, grayscale } from "../utils/cloudinary";
 // Import the Image type definition
 import { Image } from '../interfaces/Image';
 
@@ -26,15 +23,7 @@ interface ImageGridProps {
  * Handles opening the lightbox when an image is clicked.
  */
 const ImageGrid: React.FC<ImageGridProps> = ({ images, openLightbox }) => {
-  // Initialize Cloudinary instance
-  const cld = new Cloudinary({
-    cloud: {
-      cloudName: 'dtszzijrd'
-    },
-    url: {
-      secure: true
-    }
-  });
+  
 
   // Define breakpoints for the masonry layout columns
   const breakpointColumnsObj = {
