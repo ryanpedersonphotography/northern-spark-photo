@@ -2,7 +2,7 @@
 import { Cloudinary } from "@cloudinary/url-gen";
 import { fill } from "@cloudinary/url-gen/actions/resize"; // For resizing actions
 import { quality, format, dpr } from "@cloudinary/url-gen/actions/delivery"; // For delivery actions (quality, format, DPR)
-import { Effect } from "@cloudinary/url-gen/actions/effect"; // Import generic Effect action (capitalized)
+import { Effect, grayscale } from "@cloudinary/url-gen/actions/effect"; // Import grayscale effect explicitly
 import { autoGravity, focusOn } from "@cloudinary/url-gen/qualifiers/gravity"; // For gravity qualifiers
 import { auto } from "@cloudinary/url-gen/qualifiers/quality"; // For auto quality qualifier
 import { Transformation } from "@cloudinary/url-gen"; // For adding raw transformations
@@ -120,6 +120,9 @@ export const generateImageUrl = (
 
   // f_jpg
   image.delivery(format('jpg'));
+
+// Apply grayscale effect
+image.effect(grayscale());
 
   // Convert the configured CloudinaryImage object to its final URL string.
   return image.toURL();
