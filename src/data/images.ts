@@ -1,5 +1,13 @@
 import { Image } from '../interfaces/Image';
 
+  // Extract the Cloudinary public ID from a complete Cloudinary URL
+  // right now we are not using it but it might be useful later
+  // const getPublicIdFromUrl = (url: string): string | null => {
+  //   // Adjusted regex to handle optional version number in the path
+  //   const match = url.match(/\/v\d+\/(.+?)(\.\w+)?$/);
+  //   return match ? match[1] : null;
+  // };
+
 export const images = {
   'senior-grads': [
 

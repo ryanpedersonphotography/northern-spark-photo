@@ -63,8 +63,7 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, openLightbox }) => {
           .delivery(quality('auto:good'))
           .addTransformation('fl_progressive')
           .delivery(dpr('auto'))
-          .delivery(format('jpg'))
-          .effect(grayscale());
+          .delivery(format('jpg'));
 
         // Render the container for each grid image
         return (
@@ -85,7 +84,7 @@ const ImageGrid: React.FC<ImageGridProps> = ({ images, openLightbox }) => {
                 lazyload({ rootMargin: '10px 20px 10px 30px', threshold: 0.25 })
               ]}
               alt={image.alt}
-              className="w-full object-cover block transition-transform duration-500 hover:scale-105"
+              className="w-full object-cover block transition-all duration-500 filter grayscale hover:grayscale-0 hover:scale-105"
             />
           </div>
         );
