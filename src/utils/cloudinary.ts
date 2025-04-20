@@ -12,7 +12,7 @@ import { face } from "@cloudinary/url-gen/qualifiers/focusOn"; // For face focus
 // This instance is used throughout the utility functions.
 const cld = new Cloudinary({
   cloud: {
-    cloudName: 'dtszzijrd' // Replace with your actual Cloudinary cloud name if different
+    cloudName: 'dnx4og9au' // Updated Cloudinary cloud name
   },
   url: {
     secure: true // Ensures all generated URLs use HTTPS for security

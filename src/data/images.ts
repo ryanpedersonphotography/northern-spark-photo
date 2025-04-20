@@ -38,20 +38,13 @@ export const images = {
     { publicId: "senior-grads/best/rad-2_e1aji3", alt: "", orientation: "landscape" }
   ],
   nature: [
-    { publicId: "nature/best/7Y5A9026", alt: "", orientation: "landscape" },
-    { publicId: "nature/best/_E3A3024", alt: "", orientation: "landscape" },
-    { publicId: "nature/best/_E3A0572", alt: "", orientation: "landscape" },
-    { publicId: "nature/best/_E3A0537", alt: "", orientation: "landscape" },
-    { publicId: "nature/best/7Y5A4885", alt: "", orientation: "landscape" },
-    { publicId: "nature/best/7Y5A4884", alt: "", orientation: "landscape" },
-    { publicId: "nature/best/7Y5A4544", alt: "", orientation: "landscape" },
-    { publicId: "nature/best/_E3A2147", alt: "", orientation: "landscape" },
-    { publicId: "nature/best/3E3A3644", alt: "", orientation: "landscape" },
-    { publicId: "nature/best/_E3A4015", alt: "", orientation: "landscape" },
-    { publicId: "nature/best/3E3A1221", alt: "", orientation: "landscape" },
-    { publicId: "nature/best/3E3A1214", alt: "", orientation: "landscape" },
-    { publicId: "nature/best/MIII9267", alt: "", orientation: "landscape" },
-    { publicId: "nature/best/MIII8970", alt: "", orientation: "landscape" }
+    { publicId: "7Y5A9026_poosfi", alt: "Nature photograph", orientation: "portrait" },
+    { publicId: "7Y5A4884_nrsfuq", alt: "Nature photograph", orientation: "landscape" },
+    { publicId: "7Y5A4544_i7uaov", alt: "Nature photograph", orientation: "landscape" },
+    { publicId: "3E3A3644_gx0c3z", alt: "Nature photograph", orientation: "landscape" },
+    { publicId: "7Y5A4885_lsnfow", alt: "Nature photograph", orientation: "landscape" },
+    { publicId: "3E3A1221_algtt6", alt: "Nature photograph", orientation: "landscape" },
+    { publicId: "MIII8970_gcmjis", alt: "Nature photograph", orientation: "landscape" }
   ],
   family: [
     { publicId: "families/best/ofjvifolpdh6jdf8zgr3", alt: "", orientation: "landscape" },

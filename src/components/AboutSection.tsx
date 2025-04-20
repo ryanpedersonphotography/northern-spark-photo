@@ -1,4 +1,9 @@
 import React from 'react';
+import a1 from '../images/a1.jpg';
+import a2 from '../images/a2.jpg';
+import a3 from '../images/a3.jpg';
+import a4 from '../images/a4.jpg';
+import a5 from '../images/a5.jpg';
 
 interface AboutSectionProps {
   handleNavClick: (category: string) => void;
@@ -7,17 +12,20 @@ interface AboutSectionProps {
 const AboutSection: React.FC<AboutSectionProps> = ({ handleNavClick }) => {
   return (
     <div className="bg-white p-8 rounded shadow-sm">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          <h1 className="text-3xl font-light mb-4">About Northern Spark Photography</h1>
-          <h2 className="text-2xl font-light mb-4">Nisswa's Premier Senior & Family Photography Studio</h2>
-          <p className="mb-4">Northern Spark Photography specializes in capturing authentic moments with a unique artistic vision. Based in Nisswa, Minnesota, we offer professional photography services for seniors, families, events, and fashion throughout Minnesota.</p>
-          <p className="mb-4">Our approach combines natural light, creative composition, and genuine connection to create images that tell your story in a way that's both timeless and contemporary.</p>
-          <p className="mb-4">With over 10 years of experience, our team is dedicated to providing an exceptional photography experience from first consultation to final delivery.</p>
-        </div>
-        <div className="bg-gray-100 relative h-full min-h-64">
-          <img src="/api/placeholder/600/750" alt="Professional photographer from Northern Spark Photography in Nisswa, Minnesota" className="w-full h-full object-cover" />
-        </div>
+      <div className="max-w-3xl">
+        <h1 className="text-3xl font-light mb-4">About Northern Spark Photography</h1>
+        <h2 className="text-2xl font-light mb-4">Nisswa's Premier Senior & Family Photography Studio</h2>
+        <p className="mb-4">As a Christian photographer from Brainerd, Minnesota, I bring both faith and artistry to every session. Northern Spark Photography specializes in capturing authentic moments that celebrate God's creation through professional photography services for seniors, families, events, and fashion throughout Minnesota.</p>
+        <p className="mb-4">With over 15 years of experience behind the lens, I've developed an approach that combines natural light, creative composition, and genuine connection to create images that tell your story in a way that's both timeless and contemporary.</p>
+        <p className="mb-4">My journey began in Brainerd, where I discovered my passion for photography, and has led me to serve countless families and individuals throughout central Minnesota, creating lasting memories that reflect both professional excellence and Christian values.</p>
+      </div>
+
+      <div className="grid grid-cols-3 gap-4 my-8">
+        <img src={a1} alt="Photography sample 1" className="w-full h-64 object-cover rounded" />
+        <img src={a2} alt="Photography sample 2" className="w-full h-64 object-cover rounded" />
+        <img src={a3} alt="Photography sample 3" className="w-full h-64 object-cover rounded" />
+        <img src={a4} alt="Photography sample 4" className="w-full h-64 object-cover rounded col-span-2" />
+        <img src={a5} alt="Photography sample 5" className="w-full h-64 object-cover rounded" />
       </div>
       
       <div className="mt-8">
