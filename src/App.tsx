@@ -108,7 +108,7 @@ const App: React.FC = () => {
     if (activeCategory === 'pricing') return <PricingSection handleNavClick={handleNavClick} />;
     if (activeCategory === 'contact') return <ContactSection />;
 
-    // Otherwise render the gallery for 'senior-grads' or 'nature'
+    // Otherwise render the gallery for 'senior-grads' or 'family'
     const categoryImages = images[activeCategory as keyof typeof images] || []; // Ensure category exists
     return <ImageGrid
       images={categoryImages}

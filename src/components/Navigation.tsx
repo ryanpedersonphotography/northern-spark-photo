@@ -21,12 +21,6 @@ const Navigation: React.FC<NavigationProps> = ({ activeCategory, handleNavClick 
         >
           Senior Grads
         </button>
-        <button
-          onClick={() => handleNavClick('nature')}
-          className={`mx-2 px-6 py-2 border-none bg-transparent cursor-pointer text-sm uppercase tracking-wide ${activeCategory === 'nature' ? 'text-gray-800 font-normal' : 'text-gray-500 font-light'}`}
-        >
-          Nature
-        </button>
       </div>
     </div>
   );
