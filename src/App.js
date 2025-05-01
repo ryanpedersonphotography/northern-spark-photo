@@ -2,7 +2,6 @@ import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Header from './components/Header';
-import Navigation from './components/Navigation';
 import ImageGrid from './components/ImageGrid';
 import Lightbox from './components/Lightbox';
 import AboutSection from './components/AboutSection';
@@ -12,7 +11,7 @@ import Footer from './components/Footer';
 import images from './data/images';
 import { generateImageUrl } from './utils/cloudinary';
 const App = () => {
-    const [activeCategory, setActiveCategory] = useState('senior-grads'); // Default to senior-grads section
+    const [activeCategory, setActiveCategory] = useState('photos'); // Default to photos section
     const [lightboxOpen, setLightboxOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [windowWidth, setWindowWidth] = useState(1024); // Default to desktop view
@@ -39,7 +38,7 @@ const App = () => {
         });
     };
     useEffect(() => {
-        preloadCriticalImages('senior-grads', 3);
+        preloadCriticalImages('senior-grads', 3); // Still preload from senior-grads category
     }, []);
     // Handle navigation clicks
     const handleNavClick = (category) => {
@@ -55,9 +54,9 @@ const App = () => {
     const closeLightbox = () => {
         setLightboxOpen(false);
     };
-    // Navigate to next image (Ensure category exists in images)
+    // Navigate to next image
     const nextImage = () => {
-        const currentImages = images[activeCategory] || [];
+        const currentImages = images['senior-grads'] || [];
         if (currentImageIndex < currentImages.length - 1) {
             setCurrentImageIndex(currentImageIndex + 1);
         }
@@ -102,8 +101,8 @@ const App = () => {
             return _jsx(PricingSection, { handleNavClick: handleNavClick });
         if (activeCategory === 'contact')
             return _jsx(ContactSection, {});
-        // Otherwise render the gallery with exactly 9 random photos
-        const categoryImages = images[activeCategory] || [];
+        // For 'photos' category or any default, always use senior-grads images
+        const categoryImages = images['senior-grads'] || [];
         const randomNineImages = getRandomSubset(categoryImages, 9);
         return _jsx(ImageGrid, { images: randomNineImages, openLightbox: (index) => {
                 // Map the index from random subset back to full set
@@ -113,6 +112,6 @@ const App = () => {
                 setLightboxOpen(true);
             } });
     };
-    return (_jsxs("div", { className: "bg-gray-100 min-h-screen flex flex-col", children: [_jsxs("div", { className: "max-w-6xl mx-auto p-8 flex-grow relative", children: [_jsx(Header, { windowWidth: windowWidth }), _jsx(Navigation, { activeCategory: activeCategory, handleNavClick: handleNavClick }), _jsxs("div", { className: "flex justify-center space-x-6 mt-4 mb-8 text-sm text-gray-600 uppercase tracking-wider", children: [_jsx("button", { onClick: () => handleNavClick('about'), className: `hover:text-black ${activeCategory === 'about' ? 'text-black font-medium' : ''}`, children: "About" }), _jsx("button", { onClick: () => handleNavClick('contact'), className: `hover:text-black ${activeCategory === 'contact' ? 'text-black font-medium' : ''}`, children: "Contact" }), _jsx("button", { onClick: () => handleNavClick('pricing'), className: `hover:text-black ${activeCategory === 'pricing' ? 'text-black font-medium' : ''}`, children: "Pricing" })] }), renderContent(), _jsx(Lightbox, { images: images[activeCategory] || [], currentImageIndex: currentImageIndex, lightboxOpen: lightboxOpen, closeLightbox: closeLightbox, nextImage: nextImage, prevImage: prevImage })] }), _jsx(Footer, {})] }));
+    return (_jsxs("div", { className: "bg-gray-100 min-h-screen flex flex-col", children: [_jsxs("div", { className: "max-w-6xl mx-auto p-8 flex-grow relative", children: [_jsx(Header, { windowWidth: windowWidth }), _jsxs("div", { className: "flex justify-center space-x-6 mt-4 mb-8 text-sm text-gray-600 uppercase tracking-wider", children: [_jsx("button", { onClick: () => handleNavClick('photos'), className: `hover:text-black ${activeCategory === 'photos' ? 'text-black font-medium' : ''}`, children: "Gallery" }), _jsx("button", { onClick: () => handleNavClick('about'), className: `hover:text-black ${activeCategory === 'about' ? 'text-black font-medium' : ''}`, children: "About" }), _jsx("button", { onClick: () => handleNavClick('contact'), className: `hover:text-black ${activeCategory === 'contact' ? 'text-black font-medium' : ''}`, children: "Contact" }), _jsx("button", { onClick: () => handleNavClick('pricing'), className: `hover:text-black ${activeCategory === 'pricing' ? 'text-black font-medium' : ''}`, children: "Pricing" })] }), renderContent(), _jsx(Lightbox, { images: images['senior-grads'] || [], currentImageIndex: currentImageIndex, lightboxOpen: lightboxOpen, closeLightbox: closeLightbox, nextImage: nextImage, prevImage: prevImage })] }), _jsx(Footer, {})] }));
 };
 export default App;

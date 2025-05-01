@@ -12,7 +12,7 @@ import images from './data/images';
 import { generateImageUrl } from './utils/cloudinary';
 
 const App: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState('senior-grads'); // Default to senior-grads section
+  const [activeCategory, setActiveCategory] = useState('photos'); // Default to photos section
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [windowWidth, setWindowWidth] = useState(1024); // Default to desktop view
@@ -45,7 +45,7 @@ const App: React.FC = () => {
   };
   
   useEffect(() => {
-    preloadCriticalImages('senior-grads', 3);
+    preloadCriticalImages('senior-grads', 3); // Still preload from senior-grads category
   }, []);
 
   // Handle navigation clicks
@@ -65,9 +65,9 @@ const App: React.FC = () => {
     setLightboxOpen(false);
   };
 
-  // Navigate to next image (Ensure category exists in images)
+  // Navigate to next image
   const nextImage = () => {
-    const currentImages = images[activeCategory as keyof typeof images] || [];
+    const currentImages = images['senior-grads'] || [];
     if (currentImageIndex < currentImages.length - 1) {
       setCurrentImageIndex(currentImageIndex + 1);
     }
@@ -114,8 +114,8 @@ const App: React.FC = () => {
     if (activeCategory === 'pricing') return <PricingSection handleNavClick={handleNavClick} />;
     if (activeCategory === 'contact') return <ContactSection />;
 
-    // Otherwise render the gallery with exactly 9 random photos
-    const categoryImages = images[activeCategory as keyof typeof images] || [];
+    // For 'photos' category or any default, always use senior-grads images
+    const categoryImages = images['senior-grads'] || [];
     const randomNineImages = getRandomSubset(categoryImages, 9);
     
     return <ImageGrid
@@ -135,14 +135,9 @@ const App: React.FC = () => {
       <div className="max-w-6xl mx-auto p-8 flex-grow relative">
         <Header windowWidth={windowWidth} />
 
-        {/* Main Navigation Tabs */}
-        <Navigation
-          activeCategory={activeCategory}
-          handleNavClick={handleNavClick}
-        />
-
-        {/* Secondary Navigation Links */}
+        {/* Navigation Links */}
         <div className="flex justify-center space-x-6 mt-4 mb-8 text-sm text-gray-600 uppercase tracking-wider">
+          <button onClick={() => handleNavClick('photos')} className={`hover:text-black ${activeCategory === 'photos' ? 'text-black font-medium' : ''}`}>Gallery</button>
           <button onClick={() => handleNavClick('about')} className={`hover:text-black ${activeCategory === 'about' ? 'text-black font-medium' : ''}`}>About</button>
           <button onClick={() => handleNavClick('contact')} className={`hover:text-black ${activeCategory === 'contact' ? 'text-black font-medium' : ''}`}>Contact</button>
           <button onClick={() => handleNavClick('pricing')} className={`hover:text-black ${activeCategory === 'pricing' ? 'text-black font-medium' : ''}`}>Pricing</button>
@@ -151,7 +146,7 @@ const App: React.FC = () => {
         {renderContent()}
 
         <Lightbox
-          images={images[activeCategory as keyof typeof images] || []} // Ensure category exists
+          images={images['senior-grads'] || []} // Always use senior-grads images
           currentImageIndex={currentImageIndex}
           lightboxOpen={lightboxOpen}
           closeLightbox={closeLightbox} 
