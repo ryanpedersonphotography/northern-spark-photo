@@ -3,10 +3,8 @@ export * from './Image';
 export * from './ImageCategory';
 
 // Also export as a single object
-import Image from './Image';
-import ImageCategory from './ImageCategory';
+import type { Image } from './Image';
+import type { ImageCategory } from './ImageCategory';
 
-export default {
-  Image,
-  ImageCategory
-};
+// Export types only
+export default {};

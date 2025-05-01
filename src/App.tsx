@@ -12,7 +12,7 @@ import images from './data/images';
 import { generateImageUrl } from './utils/cloudinary';
 
 const App: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState('family'); // Default to family section
+  const [activeCategory, setActiveCategory] = useState('senior-grads'); // Default to senior-grads section
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [windowWidth, setWindowWidth] = useState(1024); // Default to desktop view
@@ -45,7 +45,7 @@ const App: React.FC = () => {
   };
   
   useEffect(() => {
-    preloadCriticalImages('family', 3);
+    preloadCriticalImages('senior-grads', 3);
   }, []);
 
   // Handle navigation clicks
@@ -102,17 +102,31 @@ const App: React.FC = () => {
     };
   }, [lightboxOpen, currentImageIndex, activeCategory]);
 
+  // Get random subset of images (9)
+  const getRandomSubset = (array: any[], count: number) => {
+    const shuffled = [...array].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  };
+  
   // Render content based on active category
   const renderContent = () => {
     if (activeCategory === 'about') return <AboutSection handleNavClick={handleNavClick} />;
     if (activeCategory === 'pricing') return <PricingSection handleNavClick={handleNavClick} />;
     if (activeCategory === 'contact') return <ContactSection />;
 
-    // Otherwise render the gallery for 'senior-grads' or 'family'
-    const categoryImages = images[activeCategory as keyof typeof images] || []; // Ensure category exists
+    // Otherwise render the gallery with exactly 9 random photos
+    const categoryImages = images[activeCategory as keyof typeof images] || [];
+    const randomNineImages = getRandomSubset(categoryImages, 9);
+    
     return <ImageGrid
-      images={categoryImages}
-      openLightbox={openLightbox} 
+      images={randomNineImages}
+      openLightbox={(index) => {
+        // Map the index from random subset back to full set
+        const selectedImage = randomNineImages[index];
+        const fullSetIndex = categoryImages.findIndex(img => img.publicId === selectedImage.publicId);
+        setCurrentImageIndex(fullSetIndex >= 0 ? fullSetIndex : 0);
+        setLightboxOpen(true);
+      }} 
     />;
   };
 

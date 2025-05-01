@@ -6,11 +6,7 @@ export interface Image {
 }
 
 export interface ImageCategory {
-  'senior-grads': Image[]; 
-  nature: Image[];
-  family: Image[];
+  'senior-grads': Image[];
 }
 
 // No need for separate export statement since we're using export inline
-// The line below is redundant with the export keywords above, but included for backwards compatibility
-export type { Image, ImageCategory };

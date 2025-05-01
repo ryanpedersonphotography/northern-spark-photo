@@ -33,18 +33,17 @@ export const images = {
     { publicId: "7Y5A4514_rcyodv_wutb2w_a4pwd7", alt: "Senior graduation photo", orientation: "portrait" },
     { publicId: "7Y5A1372-2_ky4anf_xakp6z_vzqu52", alt: "Senior graduation photo", orientation: "portrait" },
     { publicId: "7Y5A9783_tdm6h5_o7s1el_lmwzw1", alt: "Senior graduation photo", orientation: "portrait" },
-    { publicId: "7Y5A9014_x0jlvg_wrpdji_js0kz4", alt: "Senior graduation photo", orientation: "portrait" }
-  ],
-  family: [
-    { publicId: "461292172_8940488755964415_8510158517532946901_n-Enhanced-SR-2_czncfj", alt: "Family photo", orientation: "landscape" },
-    { publicId: "HJKz0aNjTriiOKasjX3PrQ-Enhanced-SR_dk0x7v", alt: "Family photo", orientation: "landscape" },
-    { publicId: "0v0YcT0KQf2DbfjTbiVFNw-2_1_-Enhanced-SR-2_qttenn", alt: "Family photo", orientation: "landscape" },
-    { publicId: "WH0u5-sgQ2ezc7DYXZzxsg-2-Enhanced-SR_e9oa08", alt: "Family photo", orientation: "landscape" },
-    { publicId: "IKeIIC-RSviy7fFi1SeJlw-Enhanced-SR_i3dkfc", alt: "Family photo", orientation: "landscape" },
-    { publicId: "XEZX1k_kTlqOn3ErtSP_VA-Enhanced-SR-2_llybyj", alt: "Family photo", orientation: "landscape" },
-    { publicId: "WnpfnNYtRT6RFW5I4dg7yw-Enhanced-SR_zkfxuz", alt: "Family photo", orientation: "landscape" },
-    { publicId: "F1jUPOb4QQiQvYYn86wKGA-Enhanced-SR_s6eiu8", alt: "Family photo", orientation: "landscape" },
-    { publicId: "7Y5A1020-Edit_ruwx4s", alt: "Family photo", orientation: "portrait" }
+    { publicId: "7Y5A9014_x0jlvg_wrpdji_js0kz4", alt: "Senior graduation photo", orientation: "portrait" },
+    // Family photos moved to senior-grads
+    { publicId: "461292172_8940488755964415_8510158517532946901_n-Enhanced-SR-2_czncfj", alt: "Senior graduation photo", orientation: "landscape" },
+    { publicId: "HJKz0aNjTriiOKasjX3PrQ-Enhanced-SR_dk0x7v", alt: "Senior graduation photo", orientation: "landscape" },
+    { publicId: "0v0YcT0KQf2DbfjTbiVFNw-2_1_-Enhanced-SR-2_qttenn", alt: "Senior graduation photo", orientation: "landscape" },
+    { publicId: "WH0u5-sgQ2ezc7DYXZzxsg-2-Enhanced-SR_e9oa08", alt: "Senior graduation photo", orientation: "landscape" },
+    { publicId: "IKeIIC-RSviy7fFi1SeJlw-Enhanced-SR_i3dkfc", alt: "Senior graduation photo", orientation: "landscape" },
+    { publicId: "XEZX1k_kTlqOn3ErtSP_VA-Enhanced-SR-2_llybyj", alt: "Senior graduation photo", orientation: "landscape" },
+    { publicId: "WnpfnNYtRT6RFW5I4dg7yw-Enhanced-SR_zkfxuz", alt: "Senior graduation photo", orientation: "landscape" },
+    { publicId: "F1jUPOb4QQiQvYYn86wKGA-Enhanced-SR_s6eiu8", alt: "Senior graduation photo", orientation: "landscape" },
+    { publicId: "7Y5A1020-Edit_ruwx4s", alt: "Senior graduation photo", orientation: "portrait" }
   ]
 };
 
